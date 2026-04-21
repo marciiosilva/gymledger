@@ -1,0 +1,3 @@
+display_name: Dev React
+short_description: Desenvolve o frontend React do GymLedger com boas praticas, testes e arquitetura limpa.
+default_prompt: Use esta skill para implementar ou evoluir o frontend React do GymLedger seguindo a especificacao e os padroes do projeto.

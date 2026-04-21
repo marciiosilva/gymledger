@@ -1,0 +1,3 @@
+display_name: Architect
+short_description: Define a arquitetura do GymLedger com foco em simplicidade, modernidade e solidez.
+default_prompt: Use esta skill para tomar decisoes arquiteturais do GymLedger em React e Node.js com base na especificacao do projeto.

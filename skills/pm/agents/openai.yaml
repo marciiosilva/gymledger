@@ -1,0 +1,3 @@
+display_name: PM
+short_description: Planeja e organiza o GymLedger a partir da especificacao central do projeto.
+default_prompt: Use esta skill para planejar, estruturar e priorizar o GymLedger com base no arquivo projetogymledger.md.

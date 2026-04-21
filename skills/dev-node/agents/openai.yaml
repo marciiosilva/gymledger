@@ -1,0 +1,3 @@
+display_name: Dev Node
+short_description: Desenvolve o backend Node.js do GymLedger com foco em arquitetura limpa, testes e robustez.
+default_prompt: Use esta skill para implementar ou evoluir o backend Node.js do GymLedger seguindo a especificacao e os padroes do projeto.
