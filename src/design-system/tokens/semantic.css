@@ -1,0 +1,35 @@
+:root {
+  /* backgrounds */
+  --color-bg:           var(--slate-50);
+  --color-surface:      var(--white);
+  --color-surface-soft: var(--slate-100);
+
+  /* text */
+  --color-text-primary: var(--navy-900);
+  --color-text-muted:   var(--slate-500);
+  --color-text-inverse: var(--white);
+
+  /* border */
+  --color-border:       var(--slate-200);
+
+  /* accent / brand */
+  --color-accent:       var(--green-500);
+  --color-accent-hover: var(--green-600);
+  --color-accent-active:var(--green-700);
+
+  /* semantic status */
+  --color-success:      var(--green-500);
+  --color-warning:      var(--amber-600);
+  --color-danger:       var(--red-500);
+  --color-info:         var(--navy-700);
+
+  /* semantic status soft (backgrounds) */
+  --color-success-soft: rgba(30, 182, 74, 0.1);
+  --color-warning-soft: var(--amber-100);
+  --color-danger-soft:  var(--red-100);
+  --color-info-soft:    var(--navy-100);
+
+  /* sidebar */
+  --color-sidebar-bg:   var(--navy-800);
+  --color-sidebar-text: #f4f8ff;
+}

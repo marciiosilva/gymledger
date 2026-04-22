@@ -1,10 +1,15 @@
 import { render, screen } from "@testing-library/react";
+import { MemoryRouter } from "react-router-dom";
 import { describe, expect, it } from "vitest";
 import App from "./App";
 
 describe("App", () => {
   it("renderiza a home interna do dono da academia", () => {
-    render(<App />);
+    render(
+      <MemoryRouter>
+        <App />
+      </MemoryRouter>
+    );
 
     expect(
       screen.getByRole("heading", {

@@ -1,0 +1,23 @@
+:root {
+  --font-display: "Space Grotesk", sans-serif;
+  --font-body:    "Manrope", "Segoe UI", sans-serif;
+
+  --text-xs:   0.78rem;
+  --text-sm:   0.86rem;
+  --text-base: 1rem;
+  --text-lg:   1.2rem;
+  --text-xl:   1.65rem;
+  --text-2xl:  2.1rem;
+  --text-3xl:  2.5rem;
+  --text-4xl:  4rem;
+
+  --font-weight-regular: 400;
+  --font-weight-medium:  500;
+  --font-weight-bold:    700;
+  --font-weight-heavy:   800;
+
+  --leading-tight:  0.96;
+  --leading-snug:   1.05;
+  --leading-normal: 1.5;
+  --leading-relaxed:1.7;
+}

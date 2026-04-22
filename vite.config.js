@@ -1,14 +1,22 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
+import tailwindcss from "@tailwindcss/vite";
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [tailwindcss(), react()],
   test: {
     environment: "jsdom",
     setupFiles: "./src/test/setup.js",
     coverage: {
       provider: "v8",
       reporter: ["text", "html"],
+      exclude: [
+        "**/index.ts",
+        "src/pages/DesignSystemShowcase.tsx",
+        "src/main.jsx",
+        "vite.config.js",
+        "dist/**",
+      ],
       thresholds: {
         lines: 85,
         functions: 85,
