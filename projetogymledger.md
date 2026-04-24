@@ -226,25 +226,39 @@ Aluno:
 
 ### integracoes
 
-Stripe:
-- Customers
-- Subscriptions
-- Webhooks
+**MVP (sem gateway):**
+- Supabase Auth (JWT)
+- Importação de extrato CSV/OFX (processado no backend)
+- Templates de cobrança via WhatsApp (wa.me link)
+
+**v2 (upgrade opcional após validação):**
+- Stripe Customers + Subscriptions + Webhooks
+- PIX dinâmico
 
 IA:
-- Serviço de geração de treino baseado em prompt
+- Serviço de geração de treino baseado em prompt (v2+)
 - Processamento assíncrono opcional
+
+---
+
+### decisoes tecnicas
+
+Stack backend: **NestJS + Prisma v7**
+Banco de dados: **PostgreSQL via Supabase**
+Auth: **Supabase Auth (JWT)**
+Multi-tenancy: **gym_id em cada tabela + RLS** (não schema isolado — mudança vs spec original)
+Organização: **Monorepo** — backend/ (NestJS) + frontend em src/ (React + Vite)
+Frontend auth: token JWT armazenado em localStorage, enviado via Bearer header
 
 ---
 
 ### requisitos de seguranca
 
-- Autenticação via token (JWT ou similar)
-- Autorização baseada em roles
-- Isolamento multi-tenant
-- Validação de assinatura dos webhooks Stripe
+- Autenticação via Supabase JWT
+- Autorização baseada em roles (ADMIN, TRAINER)
+- Isolamento multi-tenant via gym_id + Row Level Security
+- Rate limiting em endpoints críticos (IA quando disponível)
 - Proteção contra replay de requisições
-- Rate limiting em endpoints críticos (especialmente IA)
 
 ---
 
@@ -289,7 +303,7 @@ IA:
 
 - Qual stack final será utilizada (Flutter vs React)? Resposta: React
 - Estratégia de multi-tenant (schema isolado vs compartilhado)? Resposta: schema isolado
-- Integração com PIX será incluída no MVP ou depois? Resposta: Primeiro vamos com a Stripe
+- Integração com PIX será incluída no MVP ou depois? Resposta: MVP sem gateway — importação manual de extrato. Stripe/PIX na v2 como upgrade opcional.
 - Modelo de pricing será fixo ou por aluno? Resposta: Fixo para a academia
 - Qual nível de inteligência da IA no início? Resposta: Pode usar a LLM da Open AI com uma Key nossa
 - Aplicativo mobile será lançado junto ou depois? Resposta: Primeira versão deve ser react responsivo

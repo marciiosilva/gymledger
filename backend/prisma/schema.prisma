@@ -1,0 +1,175 @@
+generator client {
+  provider = "prisma-client"
+  output   = "./generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Gym {
+  id         String   @id @default(cuid())
+  name       String
+  ownerEmail String   @unique
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  users        User[]
+  plans        Plan[]
+  students     Student[]
+  mensalidades Mensalidade[]
+  transactions CashTransaction[]
+}
+
+model User {
+  id          String   @id @default(cuid())
+  gymId       String
+  gym         Gym      @relation(fields: [gymId], references: [id], onDelete: Cascade)
+  supabaseUid String   @unique
+  email       String
+  name        String
+  role        UserRole @default(ADMIN)
+  createdAt   DateTime @default(now())
+
+  @@unique([gymId, email])
+  @@index([gymId])
+  @@index([supabaseUid])
+}
+
+enum UserRole {
+  ADMIN
+  TRAINER
+}
+
+model Plan {
+  id            String        @id @default(cuid())
+  gymId         String
+  gym           Gym           @relation(fields: [gymId], references: [id], onDelete: Cascade)
+  name          String
+  value         Decimal       @db.Decimal(10, 2)
+  periodicity   Periodicity
+  dueDayOfMonth Int
+  paymentMethod PaymentMethod @default(PIX)
+  active        Boolean       @default(true)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  students Student[]
+
+  @@index([gymId])
+}
+
+enum Periodicity {
+  MONTHLY
+  QUARTERLY
+  SEMIANNUAL
+  ANNUAL
+}
+
+enum PaymentMethod {
+  PIX
+  CARD_MACHINE
+  CASH
+  EXTERNAL_LINK
+  OTHER
+}
+
+model Student {
+  id              String          @id @default(cuid())
+  gymId           String
+  gym             Gym             @relation(fields: [gymId], references: [id], onDelete: Cascade)
+  planId          String
+  plan            Plan            @relation(fields: [planId], references: [id])
+  name            String
+  email           String?
+  whatsapp        String?
+  startDate       DateTime
+  status          StudentStatus   @default(ACTIVE)
+  financialStatus FinancialStatus @default(PENDING)
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  mensalidades Mensalidade[]
+
+  @@unique([gymId, email])
+  @@index([gymId])
+  @@index([planId])
+}
+
+enum StudentStatus {
+  ACTIVE
+  INACTIVE
+  CANCELLED
+}
+
+enum FinancialStatus {
+  UP_TO_DATE
+  LATE
+  CANCELLED
+  PENDING
+}
+
+model Mensalidade {
+  id         String            @id @default(cuid())
+  gymId      String
+  gym        Gym               @relation(fields: [gymId], references: [id], onDelete: Cascade)
+  studentId  String
+  student    Student           @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  dueDate    DateTime
+  value      Decimal           @db.Decimal(10, 2)
+  status     MensalidadeStatus @default(PENDING)
+  paidAt     DateTime?
+  paidMethod PaymentMethod?
+  reference  String // "2025-01"
+  createdAt  DateTime          @default(now())
+  updatedAt  DateTime          @updatedAt
+
+  transactions CashTransaction[]
+
+  @@unique([studentId, reference])
+  @@index([gymId])
+  @@index([studentId])
+  @@index([dueDate])
+  @@index([status])
+}
+
+enum MensalidadeStatus {
+  PENDING
+  PAID
+  LATE
+  CANCELLED
+}
+
+model CashTransaction {
+  id            String              @id @default(cuid())
+  gymId         String
+  gym           Gym                 @relation(fields: [gymId], references: [id], onDelete: Cascade)
+  type          TransactionType
+  category      TransactionCategory
+  amount        Decimal             @db.Decimal(10, 2)
+  description   String?
+  date          DateTime
+  studentId     String?
+  mensalidadeId String?
+  mensalidade   Mensalidade?        @relation(fields: [mensalidadeId], references: [id])
+  createdAt     DateTime            @default(now())
+
+  @@index([gymId])
+  @@index([date])
+  @@index([gymId, date])
+}
+
+enum TransactionType {
+  INCOME
+  EXPENSE
+}
+
+enum TransactionCategory {
+  PLAN_REVENUE
+  MISC_REVENUE
+  PAYROLL
+  RENT
+  EQUIPMENT
+  TAX
+  OTHER
+}
