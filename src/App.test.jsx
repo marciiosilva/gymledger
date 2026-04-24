@@ -13,21 +13,21 @@ describe("App", () => {
 
     expect(
       screen.getByRole("heading", {
-        name: /boa tarde, luis. sua academia esta operando com previsibilidade/i
+        name: /luis, seu studio esta operando com caixa previsivel e sem planilha/i
       })
     ).toBeInTheDocument();
 
     expect(
       screen.getByRole("heading", {
-        name: /cobrancas recentes/i
+        name: /mensalidades vencidas que pedem acao imediata/i
       })
     ).toBeInTheDocument();
 
-    expect(screen.getByText(/R\$ 48\.200/i)).toBeInTheDocument();
-    expect(screen.getAllByText(/Marina Costa/i).length).toBeGreaterThan(0);
+    expect(screen.getByText(/R\$ 18\.720/i)).toBeInTheDocument();
+    expect(screen.getByText(/rafael lima/i)).toBeInTheDocument();
     expect(
       screen.getByRole("button", {
-        name: /gerar treino com ia/i
+        name: /importar extrato/i
       })
     ).toBeInTheDocument();
   });

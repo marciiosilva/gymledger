@@ -1,0 +1,26 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+
+  <!-- Bars -->
+  <rect x="80" y="220" width="50" height="140" rx="12" fill="#0F172A"/>
+  <rect x="170" y="180" width="50" height="180" rx="12" fill="#0F172A"/>
+  <rect x="260" y="140" width="50" height="220" rx="12" fill="#0F172A"/>
+
+  <!-- Arrow -->
+  <polyline 
+    points="60,360 140,300 220,360 320,260 380,200" 
+    fill="none" 
+    stroke="url(#grad)" 
+    stroke-width="30" 
+    stroke-linecap="round" 
+    stroke-linejoin="round"
+  />
+
+  <!-- Gradient -->
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#A3E635; stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#10B981; stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+</svg>

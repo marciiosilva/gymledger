@@ -1,157 +1,202 @@
 export const navItems = [
-  "Dashboard",
-  "Alunos",
-  "Financeiro",
-  "Planos",
-  "Treinos",
-  "Professores",
-  "IA",
-  "Relatorios"
+  { label: "Dashboard", active: true },
+  { label: "Alunos", badge: 148 },
+  { label: "Financeiro", badge: 23 },
+  { label: "Planos" },
+  { label: "Relatorios" }
 ];
 
 export const topMetrics = [
   {
-    title: "MRR",
-    value: "R$ 48.200",
-    delta: "+8.4% vs mes anterior",
-    tone: "emerald"
+    title: "MRR previsto",
+    value: "R$ 18.720",
+    delta: "124 alunos ativos no ciclo atual",
+    tone: "emerald",
+    trend: "up"
   },
   {
-    title: "Receita prevista em 30 dias",
-    value: "R$ 84.000",
-    delta: "91% da meta mensal",
-    tone: "blue"
+    title: "Recebido no mes",
+    value: "R$ 15.410",
+    delta: "82% do previsto ja conciliado",
+    tone: "blue",
+    trend: "up"
+  },
+  {
+    title: "A receber",
+    value: "R$ 3.310",
+    delta: "19 mensalidades abertas",
+    tone: "slate",
+    trend: "up"
   },
   {
     title: "Inadimplencia",
-    value: "12.8%",
-    delta: "-2.1 pontos em 14 dias",
-    tone: "amber"
+    value: "R$ 1.240",
+    delta: "7 alunos vencidos ha mais de 5 dias",
+    tone: "amber",
+    trend: "down"
   },
   {
-    title: "Alunos ativos",
-    value: "412",
-    delta: "27 novos este mes",
-    tone: "slate"
+    title: "Saldo de caixa",
+    value: "R$ 9.860",
+    delta: "Entradas - saidas do mes",
+    tone: "blue",
+    trend: "up"
   }
-];
-
-export const alertCards = [
-  {
-    title: "Falhas de pagamento exigem acao hoje",
-    description:
-      "14 alunos entraram em tentativa final de cobranca. Ative lembrete automatico e bloqueio opcional.",
-    action: "Revisar cobrancas"
-  },
-  {
-    title: "Treinos gerados por IA aguardando revisao",
-    description:
-      "6 sugestoes ficaram prontas nas ultimas 2 horas para aprovacao dos professores.",
-    action: "Abrir fila de treinos"
-  }
-];
-
-export const cashflow = [
-  { day: "Seg", amount: "R$ 9.200" },
-  { day: "Ter", amount: "R$ 12.400" },
-  { day: "Qua", amount: "R$ 10.980" },
-  { day: "Qui", amount: "R$ 14.600" },
-  { day: "Sex", amount: "R$ 11.840" }
 ];
 
 export const quickActions = [
+  "Importar extrato",
   "Cadastrar aluno",
   "Criar plano",
-  "Lancar cobranca manual",
-  "Gerar treino com IA"
+  "Abrir regua de cobranca"
+];
+
+export const weeklyCashflow = [
+  { day: "Seg", amount: "R$ 2.120" },
+  { day: "Ter", amount: "R$ 3.480" },
+  { day: "Qua", amount: "R$ 1.960" },
+  { day: "Qui", amount: "R$ 4.210" },
+  { day: "Sex", amount: "R$ 3.640" }
+];
+
+export const cadenceItems = [
+  {
+    window: "D-3",
+    title: "Lembrete suave antes do vencimento",
+    count: 8,
+    action: "Copiar mensagem"
+  },
+  {
+    window: "D+0",
+    title: "Cobrar quem vence hoje",
+    count: 5,
+    action: "Abrir WhatsApp"
+  },
+  {
+    window: "D+3",
+    title: "Atrasos que exigem acompanhamento",
+    count: 4,
+    action: "Marcar cobrado"
+  },
+  {
+    window: "D+7",
+    title: "Risco real de churn por atraso",
+    count: 3,
+    action: "Ver casos"
+  }
 ];
 
 export const moduleCards = [
   {
-    title: "Financeiro",
-    stat: "R$ 6.320 pendentes",
+    title: "Importacao e conciliacao",
+    stat: "70% auto-match",
     description:
-      "Receita recebida, prevista, falhas Stripe e historico por aluno em uma unica visao."
+      "Upload de CSV ou OFX para bater extrato com mensalidades por valor, nome e data."
   },
   {
-    title: "Alunos",
-    stat: "38 exigem atencao",
+    title: "Mensalidades",
+    stat: "19 em aberto",
     description:
-      "Monitore status financeiro e operacional sem perder contexto do plano e do treino."
+      "Serie automatica por plano, baixa manual simples e status financeiro por aluno."
   },
   {
-    title: "Treinos",
-    stat: "72 treinos ativos",
+    title: "Fluxo de caixa",
+    stat: "R$ 9.860 de saldo",
     description:
-      "Crie manualmente, gere com IA e acompanhe o que precisa de revisao da equipe."
+      "Entradas e saidas reais por categoria, sem depender de gateway para gerar previsibilidade."
   },
   {
-    title: "Multi-unidade",
-    stat: "2 unidades conectadas",
+    title: "Regua de cobranca",
+    stat: "20 acoes hoje",
     description:
-      "Tenha isolamento por academia e acompanhe resultados consolidados do grupo."
+      "Lista pronta para cobrar por WhatsApp com templates editaveis e historico de contato."
   }
 ];
 
-export const studentsSnapshot = [
-  {
-    name: "Marina Costa",
-    plan: "Performance 12x",
-    financeStatus: "Adimplente",
-    workoutStatus: "Treino renovado hoje"
-  },
-  {
-    name: "Rafael Lima",
-    plan: "Studio Mensal",
-    financeStatus: "Atrasado",
-    workoutStatus: "Check-in bloqueado"
-  },
-  {
-    name: "Bianca Torres",
-    plan: "Premium Coach",
-    financeStatus: "Adimplente",
-    workoutStatus: "Aguardando avaliacao"
-  }
-];
-
-export const paymentRows = [
-  {
-    student: "Marina Costa",
-    plan: "Performance 12x",
-    status: "Pago",
-    amount: "R$ 289",
-    date: "Hoje, 09:14"
-  },
+export const overdueRows = [
   {
     student: "Rafael Lima",
     plan: "Studio Mensal",
-    status: "Atrasado",
+    dueDate: "05 Abr",
     amount: "R$ 219",
-    date: "Ontem, 18:40"
+    status: "late"
+  },
+  {
+    student: "Paula Mota",
+    plan: "Funcional 3x",
+    dueDate: "08 Abr",
+    amount: "R$ 189",
+    status: "late"
+  },
+  {
+    student: "Diego Nunes",
+    plan: "Cross Premium",
+    dueDate: "10 Abr",
+    amount: "R$ 249",
+    status: "late"
+  },
+  {
+    student: "Camila Freire",
+    plan: "Pilates Duo",
+    dueDate: "12 Abr",
+    amount: "R$ 199",
+    status: "pending"
+  }
+];
+
+export const recentPayments = [
+  {
+    student: "Marina Costa",
+    plan: "Studio Mensal",
+    status: "Pago",
+    amount: "R$ 219",
+    date: "Hoje, 09:14"
   },
   {
     student: "Bianca Torres",
-    plan: "Premium Coach",
+    plan: "Funcional 5x",
     status: "Pago",
-    amount: "R$ 349",
+    amount: "R$ 279",
+    date: "Hoje, 10:51"
+  },
+  {
+    student: "Joao Pedro",
+    plan: "Cross Premium",
+    status: "Pendente",
+    amount: "R$ 249",
     date: "Hoje, 11:32"
   }
 ];
 
-export const coachBoard = [
+export const paymentRows = recentPayments;
+
+export const reconciliationQueue = [
   {
-    name: "Juliana Prado",
-    focus: "Hipertrofia",
-    pending: "2 revisoes de treino"
+    title: "Extrato Nubank importado",
+    description: "14 lancamentos encontrados, 10 conciliados automaticamente.",
+    badge: "4 pendentes"
   },
   {
-    name: "Caio Mendes",
-    focus: "Funcional",
-    pending: "4 alunos sem treino atualizado"
+    title: "PIX sem nome do aluno",
+    description: "3 entradas aguardam vinculacao manual a mensalidades em aberto.",
+    badge: "acao manual"
+  }
+];
+
+export const dueSoon = [
+  {
+    student: "Julia Menezes",
+    plan: "Mensal Studio",
+    dueIn: "vence amanha"
   },
   {
-    name: "Lia Rocha",
-    focus: "Cross training",
-    pending: "1 anamnese pendente"
+    student: "Andre Castro",
+    plan: "Cross 12x",
+    dueIn: "vence em 3 dias"
+  },
+  {
+    student: "Renata Luz",
+    plan: "Funcional 3x",
+    dueIn: "vence em 5 dias"
   }
 ];

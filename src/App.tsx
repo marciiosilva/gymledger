@@ -1,268 +1,367 @@
 import { Link } from "react-router-dom";
 import {
-  alertCards,
-  cashflow,
-  coachBoard,
+  cadenceItems,
+  dueSoon,
   moduleCards,
   navItems,
-  paymentRows,
+  overdueRows,
   quickActions,
-  studentsSnapshot,
+  recentPayments,
+  reconciliationQueue,
   topMetrics,
+  weeklyCashflow
 } from "./data/homepageMock";
-import { Button } from "./design-system/primitives/Button/Button";
 import { MetricCard } from "./design-system/patterns/MetricCard/MetricCard";
 import { PaymentRow } from "./design-system/patterns/PaymentRow/PaymentRow";
 import { SidebarNav } from "./design-system/patterns/SidebarNav/SidebarNav";
-
-const navData = navItems.map((label: string, index: number) => ({
-  label,
-  active: index === 0,
-}));
+import { Badge } from "./design-system/primitives/Badge/Badge";
+import { Button } from "./design-system/primitives/Button/Button";
+import { Card } from "./design-system/primitives/Card/Card";
+import { StatusBadge } from "./design-system/primitives/StatusBadge/StatusBadge";
+import { Table } from "./design-system/primitives/Table/Table";
 
 function App() {
   return (
-    <div className="app-shell">
-      <aside className="sidebar">
-        <div className="brand-lockup">
-          <div className="brand-mark" aria-hidden="true">
-            <span className="brand-bar brand-bar-one" />
-            <span className="brand-bar brand-bar-two" />
-            <span className="brand-bar brand-bar-three" />
-            <span className="brand-trend" />
-          </div>
-          <div>
-            <p className="brand-name">GymLedger</p>
-            <p className="brand-tag">Controle financeiro. Performance real.</p>
-          </div>
-        </div>
-
-        <div className="gym-summary">
-          <span className="summary-label">Conta principal</span>
-          <strong>Nova Era Fitness</strong>
-          <span className="summary-meta">2 unidades ativas • Stripe conectado</span>
-        </div>
-
-        <SidebarNav items={navData} />
-
-        <div className="sidebar-card">
-          <span className="summary-label">Atalho rapido</span>
-          <strong>Gerar treino com IA</strong>
-          <p>Use objetivo, nivel e frequencia para criar um rascunho editavel.</p>
-        </div>
-      </aside>
-
-      <main className="dashboard-shell">
-        <header className="dashboard-header">
-          <div>
-            <p className="eyebrow">Dashboard do gestor</p>
-            <h1>
-              Boa tarde, Luis. Sua academia esta operando com{" "}
-              <span className="accent-text">previsibilidade.</span>
-            </h1>
-            <p className="header-copy">
-              Acompanhe receita, cobrancas, alunos e execucao da equipe a partir
-              da tela principal do produto.
-            </p>
+    <div className="min-h-screen bg-[radial-gradient(circle_at_top_left,rgba(30,182,74,0.08),transparent_22rem),radial-gradient(circle_at_80%_10%,rgba(6,23,53,0.08),transparent_18rem),linear-gradient(180deg,#fbfcfe_0%,#f3f6fa_100%)] text-[var(--color-text-primary)]">
+      <div className="grid min-h-screen lg:grid-cols-[280px_minmax(0,1fr)]">
+        <aside className="border-b border-[rgba(255,255,255,0.06)] bg-[radial-gradient(circle_at_top,rgba(31,174,127,0.12),transparent_22rem),linear-gradient(180deg,#112b4d_0%,#17365d_58%,#1a3d63_100%)] px-5 py-6 text-white lg:border-b-0 lg:border-r">
+          <div className="flex items-start gap-4">
+            <img
+              className="brand-logo mt-1"
+              src="/branding/gymledger-logo.svg"
+              alt="Logo GymLedger"
+              width="64"
+              height="64"
+            />
+            <div>
+              <p className="m-0 font-display text-[1.2rem] font-[700] text-white">
+                GymLedger
+              </p>
+              <p className="m-0 max-w-[22ch] text-sm leading-6 text-white/70">
+                Controle financeiro. Performance real.
+              </p>
+            </div>
           </div>
 
-          <div className="header-actions">
-            {quickActions.map((action: string, index: number) => (
-              <Button
-                key={action}
-                variant={index === 0 ? "primary" : "secondary"}
-                size="md"
-              >
-                {action}
-              </Button>
-            ))}
-          </div>
-        </header>
-
-        <section className="metrics-grid" aria-label="Indicadores principais">
-          {topMetrics.map(
-            (metric: { title: string; value: string; delta: string; tone: string }) => (
-              <MetricCard
-                key={metric.title}
-                title={metric.title}
-                value={metric.value}
-                delta={metric.delta}
-                variant={metric.tone as "emerald" | "blue" | "amber" | "slate"}
-                trend={metric.tone === "amber" ? "down" : "up"}
-              />
-            )
-          )}
-        </section>
-
-        <section className="hero-grid">
-          <article className="focus-panel">
-            <div className="panel-heading">
-              <div>
-                <p className="panel-kicker">Resumo financeiro</p>
-                <h2>Receita prevista vs recebida, sem sair da home</h2>
-              </div>
-              <span className="status-pill">Atualizado ha 2 min</span>
+          <div className="mt-6 grid gap-4">
+            <div className="rounded-[var(--radius-xl)] border border-white/12 bg-[rgba(255,255,255,0.08)] p-4 backdrop-blur-sm">
+              <p className="m-0 text-[11px] font-[800] uppercase tracking-[0.08em] text-white/65">
+                Conta principal
+              </p>
+              <strong className="mt-2 block font-display text-lg text-white">
+                Studio Nova Era
+              </strong>
+              <p className="m-0 mt-2 text-sm leading-6 text-white/70">
+                MVP lean ativo. Sem gateway obrigatorio, com caixa e conciliacao no centro.
+              </p>
             </div>
 
-            <div className="cashflow-strip" aria-label="Fluxo de caixa semanal">
-              {cashflow.map((entry: { day: string; amount: string }) => (
-                <div className="cashflow-card" key={entry.day}>
-                  <span>{entry.day}</span>
-                  <strong>{entry.amount}</strong>
-                </div>
+            <SidebarNav items={navItems} />
+
+            <div className="rounded-[var(--radius-xl)] border border-white/12 bg-[rgba(255,255,255,0.08)] p-4 backdrop-blur-sm">
+              <p className="m-0 text-[11px] font-[800] uppercase tracking-[0.08em] text-white/65">
+                Hipotese em validacao
+              </p>
+              <p className="m-0 mt-2 text-sm leading-6 text-white/78">
+                Substituir a planilha por previsibilidade financeira, conciliacao simples e cobranca assistida.
+              </p>
+            </div>
+          </div>
+        </aside>
+
+        <main className="px-4 py-5 sm:px-6 lg:px-7 lg:py-7">
+          <div className="mx-auto grid max-w-[1440px] gap-6">
+            <header className="flex flex-col gap-5 xl:flex-row xl:items-start xl:justify-between">
+              <div className="max-w-[760px]">
+                <p className="m-0 text-[11px] font-[800] uppercase tracking-[0.08em] text-[var(--color-accent-active)]">
+                  MVP lean • financeiro-first
+                </p>
+                <h1 className="m-0 mt-3 max-w-[14ch] font-display text-[clamp(2.3rem,4vw,4rem)] leading-[0.96] tracking-[-0.04em] text-[var(--color-text-primary)]">
+                  Luis, seu studio esta operando com caixa previsivel e sem planilha.
+                </h1>
+                <p className="m-0 mt-4 max-w-[64ch] text-[var(--text-base)] leading-7 text-[var(--color-text-muted)]">
+                  Esta home foi reposicionada para o MVP real: organizar o dinheiro que ja entra
+                  hoje, conciliar extratos, acompanhar mensalidades e reduzir inadimplencia com
+                  uma regua manual-assistida.
+                </p>
+              </div>
+
+              <div className="flex flex-wrap gap-2 xl:max-w-[520px] xl:justify-end">
+                {quickActions.map((action, index) => (
+                  <Button key={action} variant={index === 0 ? "primary" : "secondary"} size="md">
+                    {action}
+                  </Button>
+                ))}
+              </div>
+            </header>
+
+            <section
+              className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5"
+              aria-label="Indicadores principais do MVP"
+            >
+              {topMetrics.map((metric) => (
+                <MetricCard
+                  key={metric.title}
+                  title={metric.title}
+                  value={metric.value}
+                  delta={metric.delta}
+                  variant={metric.tone}
+                  trend={metric.trend}
+                />
               ))}
-            </div>
+            </section>
 
-            <div className="alert-stack">
-              {alertCards.map(
-                (alert: { title: string; description: string; action: string }) => (
-                  <article className="alert-card" key={alert.title}>
+            <section className="grid gap-4 xl:grid-cols-[minmax(0,1.35fr)_380px]">
+              <Card variant="tinted">
+                <Card.Header className="pb-0">
+                  <div>
+                    <p className="m-0 text-[11px] font-[800] uppercase tracking-[0.08em] text-[var(--color-text-muted)]">
+                      Dashboard financeiro
+                    </p>
+                    <h2 className="m-0 mt-2 font-display text-[1.75rem] leading-[1.02] tracking-[-0.04em]">
+                      Receita prevista, caixa e conciliacao sem depender de Stripe
+                    </h2>
+                  </div>
+                  <Badge variant="info" size="md">
+                    Atualizado ha 2 min
+                  </Badge>
+                </Card.Header>
+                <Card.Body className="grid gap-5 pt-5">
+                  <div className="grid gap-3 md:grid-cols-5">
+                    {weeklyCashflow.map((entry) => (
+                      <div
+                        key={entry.day}
+                        className="rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-white/90 p-4 shadow-[var(--shadow-sm)]"
+                      >
+                        <p className="m-0 text-[11px] font-[800] uppercase tracking-[0.08em] text-[var(--color-text-muted)]">
+                          {entry.day}
+                        </p>
+                        <strong className="mt-2 block font-display text-[var(--text-xl)]">
+                          {entry.amount}
+                        </strong>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="grid gap-3 md:grid-cols-2">
+                    <div className="rounded-[var(--radius-xl)] border border-[var(--color-border)] bg-white/92 p-5 shadow-[var(--shadow-sm)]">
+                      <p className="m-0 text-[11px] font-[800] uppercase tracking-[0.08em] text-[var(--color-text-muted)]">
+                        O que valida o MVP
+                      </p>
+                      <ul className="m-0 mt-3 grid gap-3 p-0 text-sm leading-6 text-[var(--color-text-muted)]">
+                        <li className="list-none">Upload de CSV ou OFX com conciliacao semiautomatica.</li>
+                        <li className="list-none">Livro-caixa com entradas, saidas e saldo real do mes.</li>
+                        <li className="list-none">Mensalidades previsiveis por plano e status financeiro por aluno.</li>
+                      </ul>
+                    </div>
+
+                    <div className="rounded-[var(--radius-xl)] border border-[var(--color-border)] bg-white/92 p-5 shadow-[var(--shadow-sm)]">
+                      <p className="m-0 text-[11px] font-[800] uppercase tracking-[0.08em] text-[var(--color-text-muted)]">
+                        Aprendizado da semana
+                      </p>
+                      <div className="mt-3 flex flex-wrap gap-2">
+                        <Badge variant="success">10 matches automaticos</Badge>
+                        <Badge variant="warning">4 conciliacoes manuais</Badge>
+                        <Badge variant="neutral">3 exportacoes de fechamento</Badge>
+                      </div>
+                      <p className="m-0 mt-4 text-sm leading-6 text-[var(--color-text-muted)]">
+                        A home agora evidencia o ciclo build-measure-learn do MVP, em vez de vender
+                        modulos que o plano colocou para depois.
+                      </p>
+                    </div>
+                  </div>
+                </Card.Body>
+              </Card>
+
+              <Card variant="dark" className="relative">
+                <Card.Header className="pb-0">
+                  <div>
+                    <p className="m-0 text-[11px] font-[800] uppercase tracking-[0.08em] text-white/70">
+                      Regua manual-assistida
+                    </p>
+                    <h2 className="m-0 mt-2 font-display text-[1.75rem] leading-[1.02] tracking-[-0.04em] text-white">
+                      Precisa cobrar hoje
+                    </h2>
+                  </div>
+                </Card.Header>
+                <Card.Body className="grid gap-3 pt-5">
+                  {cadenceItems.map((item) => (
+                    <div
+                      key={item.window}
+                      className="rounded-[var(--radius-lg)] border border-white/8 bg-white/6 p-4"
+                    >
+                      <div className="flex items-start justify-between gap-3">
+                        <div>
+                          <p className="m-0 text-[11px] font-[800] uppercase tracking-[0.08em] text-white/60">
+                            {item.window}
+                          </p>
+                          <strong className="mt-2 block font-display text-lg text-white">
+                            {item.title}
+                          </strong>
+                        </div>
+                        <Badge variant="success" size="sm">
+                          {item.count}
+                        </Badge>
+                      </div>
+                      <Button variant="secondary" size="sm" className="mt-4 w-full">
+                        {item.action}
+                      </Button>
+                    </div>
+                  ))}
+                </Card.Body>
+              </Card>
+            </section>
+
+            <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4" aria-label="Modulos MVP">
+              {moduleCards.map((module) => (
+                <Card key={module.title} variant="tinted">
+                  <Card.Body className="grid gap-3">
+                    <p className="m-0 text-[11px] font-[800] uppercase tracking-[0.08em] text-[var(--color-text-muted)]">
+                      {module.title}
+                    </p>
+                    <strong className="font-display text-[1.5rem] leading-tight text-[var(--color-text-primary)]">
+                      {module.stat}
+                    </strong>
+                    <p className="m-0 text-sm leading-6 text-[var(--color-text-muted)]">
+                      {module.description}
+                    </p>
+                  </Card.Body>
+                </Card>
+              ))}
+            </section>
+
+            <section className="grid gap-4 xl:grid-cols-[minmax(0,1.3fr)_380px]">
+              <div className="grid gap-4">
+                <Card variant="elevated">
+                  <Card.Header className="pb-0">
                     <div>
-                      <h3>{alert.title}</h3>
-                      <p>{alert.description}</p>
+                      <p className="m-0 text-[11px] font-[800] uppercase tracking-[0.08em] text-[var(--color-text-muted)]">
+                        Top 5 atrasados
+                      </p>
+                      <h2 className="m-0 mt-2 font-display text-[1.6rem] leading-[1.05] tracking-[-0.04em]">
+                        Mensalidades vencidas que pedem acao imediata
+                      </h2>
                     </div>
-                    <Button variant="primary" size="sm">{alert.action}</Button>
-                  </article>
-                )
-              )}
-            </div>
-          </article>
+                    <Badge variant="warning" size="md">
+                      {overdueRows.length} casos prioritarios
+                    </Badge>
+                  </Card.Header>
+                  <Card.Body className="pt-5">
+                    <Table density="compact">
+                      <Table.Head>
+                        <tr>
+                          <Table.HeaderCell>Aluno</Table.HeaderCell>
+                          <Table.HeaderCell>Plano</Table.HeaderCell>
+                          <Table.HeaderCell>Vencimento</Table.HeaderCell>
+                          <Table.HeaderCell>Valor</Table.HeaderCell>
+                          <Table.HeaderCell>Status</Table.HeaderCell>
+                        </tr>
+                      </Table.Head>
+                      <Table.Body>
+                        {overdueRows.map((row) => (
+                          <Table.Row key={`${row.student}-${row.dueDate}`}>
+                            <Table.Cell className="font-[700]">{row.student}</Table.Cell>
+                            <Table.Cell>{row.plan}</Table.Cell>
+                            <Table.Cell>{row.dueDate}</Table.Cell>
+                            <Table.Cell className="font-[700]">{row.amount}</Table.Cell>
+                            <Table.Cell>
+                              <StatusBadge status={row.status} size="sm" />
+                            </Table.Cell>
+                          </Table.Row>
+                        ))}
+                      </Table.Body>
+                    </Table>
+                  </Card.Body>
+                </Card>
 
-          <article className="operations-panel">
-            <div className="panel-heading">
-              <div>
-                <p className="panel-kicker">Central operacional</p>
-                <h2>O que precisa da sua atencao agora</h2>
-              </div>
-            </div>
-
-            <div className="operations-list">
-              <div className="operation-item">
-                <span className="operation-label">Receita em risco</span>
-                <strong>R$ 6.320</strong>
-                <p>Pagamentos em atraso ou com retentativa pendente.</p>
-              </div>
-              <div className="operation-item">
-                <span className="operation-label">Treinos na fila</span>
-                <strong>6</strong>
-                <p>Sugestoes da IA aguardando revisao dos professores.</p>
-              </div>
-              <div className="operation-item">
-                <span className="operation-label">Check-ins bloqueados</span>
-                <strong>4</strong>
-                <p>Bloqueio configuravel ativo por inadimplencia.</p>
-              </div>
-            </div>
-            <div className="operations-footer">
-              <span className="operations-signal">Gym em azul. Ledger em verde.</span>
-              <span className="operations-signal">Financeiro lidera a leitura da tela.</span>
-            </div>
-          </article>
-        </section>
-
-        <section className="modules-grid" aria-label="Modulos principais">
-          {moduleCards.map(
-            (module: { title: string; stat: string; description: string }) => (
-              <article className="module-card" key={module.title}>
-                <span className="module-title">{module.title}</span>
-                <strong>{module.stat}</strong>
-                <p>{module.description}</p>
-              </article>
-            )
-          )}
-        </section>
-
-        <section className="content-grid">
-          <article className="table-panel">
-            <div className="panel-heading">
-              <div>
-                <p className="panel-kicker">Pagamentos</p>
-                <h2>Cobrancas recentes</h2>
-              </div>
-              <span className="status-pill muted">Stripe online</span>
-            </div>
-
-            <div className="payments-table">
-              <div className="payments-head" role="row">
-                <span role="columnheader">Aluno</span>
-                <span role="columnheader">Plano</span>
-                <span role="columnheader">Status</span>
-                <span role="columnheader">Valor</span>
-                <span role="columnheader">Data</span>
-              </div>
-              {paymentRows.map(
-                (row: {
-                  student: string;
-                  plan: string;
-                  status: string;
-                  amount: string;
-                  date: string;
-                }) => (
-                  <PaymentRow key={`${row.student}-${row.date}`} {...row} />
-                )
-              )}
-            </div>
-          </article>
-
-          <div className="right-rail">
-            <article className="side-panel">
-              <div className="panel-heading">
-                <div>
-                  <p className="panel-kicker">Alunos</p>
-                  <h2>Status operacional</h2>
-                </div>
-              </div>
-
-              <div className="stack-list">
-                {studentsSnapshot.map(
-                  (student: {
-                    name: string;
-                    plan: string;
-                    financeStatus: string;
-                    workoutStatus: string;
-                  }) => (
-                    <div className="list-card" key={student.name}>
-                      <strong>{student.name}</strong>
-                      <span>{student.plan}</span>
-                      <p>{student.financeStatus}</p>
-                      <small>{student.workoutStatus}</small>
+                <Card variant="elevated">
+                  <Card.Header className="pb-0">
+                    <div>
+                      <p className="m-0 text-[11px] font-[800] uppercase tracking-[0.08em] text-[var(--color-text-muted)]">
+                        Recebimentos conciliados
+                      </p>
+                      <h2 className="m-0 mt-2 font-display text-[1.6rem] leading-[1.05] tracking-[-0.04em]">
+                        Ultimos recebimentos reconhecidos pelo sistema
+                      </h2>
                     </div>
-                  )
-                )}
-              </div>
-            </article>
-
-            <article className="side-panel">
-              <div className="panel-heading">
-                <div>
-                  <p className="panel-kicker">Equipe</p>
-                  <h2>Professores e pendencias</h2>
-                </div>
+                  </Card.Header>
+                  <Card.Body className="grid gap-3 pt-5">
+                    {recentPayments.map((row) => (
+                      <PaymentRow key={`${row.student}-${row.date}`} {...row} />
+                    ))}
+                  </Card.Body>
+                </Card>
               </div>
 
-              <div className="stack-list">
-                {coachBoard.map(
-                  (coach: { name: string; focus: string; pending: string }) => (
-                    <div className="list-card" key={coach.name}>
-                      <strong>{coach.name}</strong>
-                      <span>{coach.focus}</span>
-                      <small>{coach.pending}</small>
+              <div className="grid gap-4">
+                <Card variant="tinted">
+                  <Card.Header className="pb-0">
+                    <div>
+                      <p className="m-0 text-[11px] font-[800] uppercase tracking-[0.08em] text-[var(--color-text-muted)]">
+                        Conciliacao pendente
+                      </p>
+                      <h2 className="m-0 mt-2 font-display text-[1.4rem] leading-[1.08] tracking-[-0.04em]">
+                        O que ainda precisa de decisao manual
+                      </h2>
                     </div>
-                  )
-                )}
+                  </Card.Header>
+                  <Card.Body className="grid gap-3 pt-5">
+                    {reconciliationQueue.map((item) => (
+                      <div
+                        key={item.title}
+                        className="rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-white/90 p-4"
+                      >
+                        <div className="flex items-start justify-between gap-3">
+                          <strong className="font-display text-base">{item.title}</strong>
+                          <Badge variant="info" size="sm">
+                            {item.badge}
+                          </Badge>
+                        </div>
+                        <p className="m-0 mt-2 text-sm leading-6 text-[var(--color-text-muted)]">
+                          {item.description}
+                        </p>
+                      </div>
+                    ))}
+                  </Card.Body>
+                </Card>
+
+                <Card variant="tinted">
+                  <Card.Header className="pb-0">
+                    <div>
+                      <p className="m-0 text-[11px] font-[800] uppercase tracking-[0.08em] text-[var(--color-text-muted)]">
+                        Proximos vencimentos
+                      </p>
+                      <h2 className="m-0 mt-2 font-display text-[1.4rem] leading-[1.08] tracking-[-0.04em]">
+                        Quem entra na regua nos proximos dias
+                      </h2>
+                    </div>
+                  </Card.Header>
+                  <Card.Body className="grid gap-3 pt-5">
+                    {dueSoon.map((item) => (
+                      <div
+                        key={item.student}
+                        className="rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-white/90 p-4"
+                      >
+                        <strong className="font-display text-base">{item.student}</strong>
+                        <p className="m-0 mt-1 text-sm text-[var(--color-text-muted)]">{item.plan}</p>
+                        <Badge variant="neutral" size="sm" className="mt-3">
+                          {item.dueIn}
+                        </Badge>
+                      </div>
+                    ))}
+                  </Card.Body>
+                </Card>
               </div>
-            </article>
+            </section>
+
+            <div className="flex justify-end">
+              <Button asChild variant="ghost" size="sm">
+                <Link to="/ds">Ver Design System →</Link>
+              </Button>
+            </div>
           </div>
-        </section>
-
-        <div className="mt-4 flex justify-end">
-          <Link to="/ds">
-            <Button variant="ghost" size="sm">
-              Ver Design System →
-            </Button>
-          </Link>
-        </div>
-      </main>
+        </main>
+      </div>
     </div>
   );
 }

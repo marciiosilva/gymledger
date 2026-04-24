@@ -20,8 +20,8 @@ const cardVariants = cva(
         ],
         blue: [
           "shadow-[var(--shadow-lg)]",
-          "bg-gradient-to-br from-[rgba(6,23,53,0.06)] to-white/98",
-          "border-[rgba(6,23,53,0.12)]",
+          "bg-gradient-to-br from-[rgba(17,43,77,0.08)] to-white/98",
+          "border-[rgba(17,43,77,0.14)]",
         ],
         amber: [
           "shadow-[var(--shadow-lg)]",
@@ -29,10 +29,10 @@ const cardVariants = cva(
         ],
         slate: [
           "shadow-[var(--shadow-lg)]",
-          "bg-gradient-to-br from-[rgba(6,23,53,0.05)] to-white/98",
+          "bg-gradient-to-br from-[rgba(17,43,77,0.06)] to-white/98",
         ],
         dark: [
-          "bg-gradient-to-b from-[rgba(6,23,53,0.98)] to-[rgba(10,31,62,0.96)]",
+          "bg-gradient-to-b from-[rgba(17,43,77,0.98)] to-[rgba(26,61,99,0.96)]",
           "border-white/5 text-[#f8f3eb]",
           "overflow-hidden",
         ],
