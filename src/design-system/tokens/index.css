@@ -1,0 +1,56 @@
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Manrope:wght@400;500;700;800&display=swap");
+@import "tailwindcss";
+@import "./colors.css";
+@import "./semantic.css";
+@import "./typography.css";
+@import "./spacing.css";
+@import "./radius.css";
+@import "./shadows.css";
+@import "./motion.css";
+
+/* Expose tokens as Tailwind utilities via static values */
+@theme {
+  /* colors — primitives */
+  --color-green-400: #41d474;
+  --color-green-500: #1eb64a;
+  --color-green-600: #1fae7f;
+  --color-green-700: #10985b;
+  --color-navy-900:  #061735;
+  --color-navy-800:  #081c3d;
+  --color-navy-700:  #0d2143;
+  --color-navy-100:  #e9eef8;
+  --color-amber-600: #b86c18;
+  --color-amber-100: #fce7ca;
+  --color-slate-500: #61718a;
+  --color-red-500:   #d94848;
+  --color-red-100:   #fde8e8;
+
+  /* colors — semantic */
+  --color-accent:        #1eb64a;
+  --color-accent-hover:  #1fae7f;
+  --color-accent-active: #10985b;
+  --color-surface:       #ffffff;
+  --color-border:        rgba(7, 27, 58, 0.1);
+  --color-text-primary:  #061735;
+  --color-text-muted:    #61718a;
+  --color-success:       #1eb64a;
+  --color-warning:       #b86c18;
+  --color-danger:        #d94848;
+  --color-info:          #0d2143;
+
+  /* font families */
+  --font-display: "Space Grotesk", sans-serif;
+  --font-body:    "Manrope", "Segoe UI", sans-serif;
+
+  /* radius */
+  --radius-sm:   8px;
+  --radius-md:   12px;
+  --radius-lg:   16px;
+  --radius-xl:   22px;
+  --radius-full: 999px;
+
+  /* shadows */
+  --shadow-sm: 0 2px 8px rgba(6, 23, 53, 0.04);
+  --shadow-md: 0 8px 24px rgba(6, 23, 53, 0.06);
+  --shadow-lg: 0 22px 60px rgba(6, 23, 53, 0.08);
+}

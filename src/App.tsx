@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import {
   alertCards,
   cashflow,
@@ -7,8 +8,17 @@ import {
   paymentRows,
   quickActions,
   studentsSnapshot,
-  topMetrics
+  topMetrics,
 } from "./data/homepageMock";
+import { Button } from "./design-system/primitives/Button/Button";
+import { MetricCard } from "./design-system/patterns/MetricCard/MetricCard";
+import { PaymentRow } from "./design-system/patterns/PaymentRow/PaymentRow";
+import { SidebarNav } from "./design-system/patterns/SidebarNav/SidebarNav";
+
+const navData = navItems.map((label: string, index: number) => ({
+  label,
+  active: index === 0,
+}));
 
 function App() {
   return (
@@ -33,17 +43,7 @@ function App() {
           <span className="summary-meta">2 unidades ativas • Stripe conectado</span>
         </div>
 
-        <nav className="sidebar-nav" aria-label="Navegacao principal">
-          {navItems.map((item, index) => (
-            <a
-              key={item}
-              className={`nav-item ${index === 0 ? "is-active" : ""}`}
-              href="/"
-            >
-              {item}
-            </a>
-          ))}
-        </nav>
+        <SidebarNav items={navData} />
 
         <div className="sidebar-card">
           <span className="summary-label">Atalho rapido</span>
@@ -67,26 +67,31 @@ function App() {
           </div>
 
           <div className="header-actions">
-            {quickActions.map((action, index) => (
-              <button
-                className={index === 0 ? "primary-action" : "secondary-action"}
+            {quickActions.map((action: string, index: number) => (
+              <Button
                 key={action}
-                type="button"
+                variant={index === 0 ? "primary" : "secondary"}
+                size="md"
               >
                 {action}
-              </button>
+              </Button>
             ))}
           </div>
         </header>
 
         <section className="metrics-grid" aria-label="Indicadores principais">
-          {topMetrics.map((metric) => (
-            <article className={`metric-card ${metric.tone}`} key={metric.title}>
-              <span>{metric.title}</span>
-              <strong>{metric.value}</strong>
-              <p>{metric.delta}</p>
-            </article>
-          ))}
+          {topMetrics.map(
+            (metric: { title: string; value: string; delta: string; tone: string }) => (
+              <MetricCard
+                key={metric.title}
+                title={metric.title}
+                value={metric.value}
+                delta={metric.delta}
+                variant={metric.tone as "emerald" | "blue" | "amber" | "slate"}
+                trend={metric.tone === "amber" ? "down" : "up"}
+              />
+            )
+          )}
         </section>
 
         <section className="hero-grid">
@@ -100,7 +105,7 @@ function App() {
             </div>
 
             <div className="cashflow-strip" aria-label="Fluxo de caixa semanal">
-              {cashflow.map((entry) => (
+              {cashflow.map((entry: { day: string; amount: string }) => (
                 <div className="cashflow-card" key={entry.day}>
                   <span>{entry.day}</span>
                   <strong>{entry.amount}</strong>
@@ -109,15 +114,17 @@ function App() {
             </div>
 
             <div className="alert-stack">
-              {alertCards.map((alert) => (
-                <article className="alert-card" key={alert.title}>
-                  <div>
-                    <h3>{alert.title}</h3>
-                    <p>{alert.description}</p>
-                  </div>
-                  <button type="button">{alert.action}</button>
-                </article>
-              ))}
+              {alertCards.map(
+                (alert: { title: string; description: string; action: string }) => (
+                  <article className="alert-card" key={alert.title}>
+                    <div>
+                      <h3>{alert.title}</h3>
+                      <p>{alert.description}</p>
+                    </div>
+                    <Button variant="primary" size="sm">{alert.action}</Button>
+                  </article>
+                )
+              )}
             </div>
           </article>
 
@@ -154,13 +161,15 @@ function App() {
         </section>
 
         <section className="modules-grid" aria-label="Modulos principais">
-          {moduleCards.map((module) => (
-            <article className="module-card" key={module.title}>
-              <span className="module-title">{module.title}</span>
-              <strong>{module.stat}</strong>
-              <p>{module.description}</p>
-            </article>
-          ))}
+          {moduleCards.map(
+            (module: { title: string; stat: string; description: string }) => (
+              <article className="module-card" key={module.title}>
+                <span className="module-title">{module.title}</span>
+                <strong>{module.stat}</strong>
+                <p>{module.description}</p>
+              </article>
+            )
+          )}
         </section>
 
         <section className="content-grid">
@@ -173,7 +182,7 @@ function App() {
               <span className="status-pill muted">Stripe online</span>
             </div>
 
-            <div className="payments-table" role="table" aria-label="Tabela de pagamentos">
+            <div className="payments-table">
               <div className="payments-head" role="row">
                 <span role="columnheader">Aluno</span>
                 <span role="columnheader">Plano</span>
@@ -181,32 +190,17 @@ function App() {
                 <span role="columnheader">Valor</span>
                 <span role="columnheader">Data</span>
               </div>
-
-              {paymentRows.map((row) => (
-                <div className="payments-row" role="row" key={`${row.student}-${row.date}`}>
-                  <span className="cell student-cell" role="cell" data-label="Aluno">
-                    {row.student}
-                  </span>
-                  <span className="cell" role="cell" data-label="Plano">
-                    {row.plan}
-                  </span>
-                  <span className="cell" role="cell" data-label="Status">
-                    <span
-                      className={`status-badge ${
-                        row.status === "Pago" ? "status-paid" : "status-late"
-                      }`}
-                    >
-                      {row.status}
-                    </span>
-                  </span>
-                  <span className="cell amount-cell" role="cell" data-label="Valor">
-                    {row.amount}
-                  </span>
-                  <span className="cell" role="cell" data-label="Data">
-                    {row.date}
-                  </span>
-                </div>
-              ))}
+              {paymentRows.map(
+                (row: {
+                  student: string;
+                  plan: string;
+                  status: string;
+                  amount: string;
+                  date: string;
+                }) => (
+                  <PaymentRow key={`${row.student}-${row.date}`} {...row} />
+                )
+              )}
             </div>
           </article>
 
@@ -220,14 +214,21 @@ function App() {
               </div>
 
               <div className="stack-list">
-                {studentsSnapshot.map((student) => (
-                  <div className="list-card" key={student.name}>
-                    <strong>{student.name}</strong>
-                    <span>{student.plan}</span>
-                    <p>{student.financeStatus}</p>
-                    <small>{student.workoutStatus}</small>
-                  </div>
-                ))}
+                {studentsSnapshot.map(
+                  (student: {
+                    name: string;
+                    plan: string;
+                    financeStatus: string;
+                    workoutStatus: string;
+                  }) => (
+                    <div className="list-card" key={student.name}>
+                      <strong>{student.name}</strong>
+                      <span>{student.plan}</span>
+                      <p>{student.financeStatus}</p>
+                      <small>{student.workoutStatus}</small>
+                    </div>
+                  )
+                )}
               </div>
             </article>
 
@@ -240,17 +241,27 @@ function App() {
               </div>
 
               <div className="stack-list">
-                {coachBoard.map((coach) => (
-                  <div className="list-card" key={coach.name}>
-                    <strong>{coach.name}</strong>
-                    <span>{coach.focus}</span>
-                    <small>{coach.pending}</small>
-                  </div>
-                ))}
+                {coachBoard.map(
+                  (coach: { name: string; focus: string; pending: string }) => (
+                    <div className="list-card" key={coach.name}>
+                      <strong>{coach.name}</strong>
+                      <span>{coach.focus}</span>
+                      <small>{coach.pending}</small>
+                    </div>
+                  )
+                )}
               </div>
             </article>
           </div>
         </section>
+
+        <div className="mt-4 flex justify-end">
+          <Link to="/ds">
+            <Button variant="ghost" size="sm">
+              Ver Design System →
+            </Button>
+          </Link>
+        </div>
       </main>
     </div>
   );
