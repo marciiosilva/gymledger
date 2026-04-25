@@ -22,7 +22,7 @@ import { Tooltip } from "../design-system/primitives/Tooltip/Tooltip";
 const navItems = [
   { label: "Dashboard", href: "/" },
   { label: "Alunos", href: "/alunos", active: true, badge: 148 },
-  { label: "Financeiro", badge: 23 },
+  { label: "Financeiro", href: "/financeiro", badge: 23 },
   { label: "Planos" },
   { label: "Relatorios" }
 ];
