@@ -42,10 +42,11 @@ export function SidebarNav({ items, className }: SidebarNavProps) {
     <nav className={cn("flex flex-col gap-1", className)} aria-label="Navegação principal">
       {items.map((item) => {
         const Icon = item.icon ?? DEFAULT_ICONS[item.label];
+        const Comp = item.href ? "a" : "button";
         return (
-          <button
+          <Comp
             key={item.label}
-            type="button"
+            {...(item.href ? { href: item.href } : { type: "button" })}
             onClick={item.onClick}
             aria-current={item.active ? "page" : undefined}
             className={cn(
@@ -77,7 +78,7 @@ export function SidebarNav({ items, className }: SidebarNavProps) {
                 {item.badge > 99 ? "99+" : item.badge}
               </span>
             )}
-          </button>
+          </Comp>
         );
       })}
     </nav>

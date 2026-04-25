@@ -3,6 +3,7 @@ import ReactDOM from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import App from "./App.tsx";
 import { DesignSystemShowcase } from "./pages/DesignSystemShowcase";
+import { StudentsPage } from "./pages/StudentsPage";
 import "./design-system/tokens/index.css";
 import "./styles.css";
 
@@ -11,6 +12,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<App />} />
+        <Route path="/alunos" element={<StudentsPage />} />
         <Route path="/ds" element={<DesignSystemShowcase />} />
       </Routes>
     </BrowserRouter>

@@ -1,6 +1,6 @@
 export const navItems = [
-  { label: "Dashboard", active: true },
-  { label: "Alunos", badge: 148 },
+  { label: "Dashboard", href: "/", active: true },
+  { label: "Alunos", href: "/alunos", badge: 148 },
   { label: "Financeiro", badge: 23 },
   { label: "Planos" },
   { label: "Relatorios" }
