@@ -54,8 +54,8 @@ export function FinancePage() {
   return (
     <MaterialShell
       eyebrow="Financeiro"
-      title="Caixa previsivel com conciliacao e cobranca no centro."
-      description="Controle entradas, saidas, mensalidades abertas e lancamentos importados sem depender de gateway para enxergar a saude financeira do studio."
+      title="Caixa previsivel, decisao rapida."
+      description="Controle entradas, saidas, mensalidades abertas e conciliacao em uma rotina simples de fechamento."
       asideTitle="Fechamento do mes"
       asideDescription="Caixa, mensalidades e conciliacao com decisao rapida."
       actions={

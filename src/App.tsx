@@ -43,9 +43,9 @@ function statusColor(status: string): "success" | "warning" | "error" {
 function App() {
   return (
     <MaterialShell
-      eyebrow="MVP lean - financeiro-first"
-      title="Luis, seu studio esta operando com caixa previsivel e sem planilha."
-      description="Esta home foi reposicionada para o MVP real: organizar o dinheiro que ja entra hoje, conciliar extratos, acompanhar mensalidades e reduzir inadimplencia com uma regua manual-assistida."
+      eyebrow="Dashboard"
+      title="Caixa do studio sob controle."
+      description="Acompanhe receita, conciliacao e inadimplencia do dia em um painel direto para decidir a proxima acao."
       asideTitle="Hipotese em validacao"
       asideDescription="MVP lean ativo. Sem gateway obrigatorio, com caixa e conciliacao no centro."
       actions={["Importar extrato", "Cadastrar aluno", "Criar plano", "Abrir regua de cobranca"].map(

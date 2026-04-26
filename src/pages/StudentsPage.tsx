@@ -45,8 +45,8 @@ export function StudentsPage() {
   return (
     <MaterialShell
       eyebrow="Alunos"
-      title="Base de alunos com financeiro e retencao no mesmo lugar."
-      description="Uma visao de operacao para saber quem esta ativo, quem precisa ser cobrado, quem reduziu frequencia e qual acao deve acontecer hoje."
+      title="Alunos, caixa e retencao juntos."
+      description="Veja quem esta ativo, quem precisa de cobranca e quais alunos pedem acompanhamento hoje."
       asideTitle="Foco operacional"
       asideDescription="Base de alunos conectada ao caixa, cobranca e retencao."
       actions={
