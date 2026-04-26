@@ -1,269 +1,344 @@
-import { Link } from "react-router-dom";
+import { Link as RouterLink } from "react-router-dom";
+import CloudUpload from "@mui/icons-material/CloudUpload";
+import Message from "@mui/icons-material/Message";
+import PersonAdd from "@mui/icons-material/PersonAdd";
+import PriceChange from "@mui/icons-material/PriceChange";
 import {
-  alertCards,
-  cashflow,
-  coachBoard,
+  Box,
+  Button,
+  Card,
+  CardContent,
+  Chip,
+  Grid,
+  LinearProgress,
+  Stack,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Typography
+} from "@mui/material";
+import {
+  cadenceItems,
+  dueSoon,
   moduleCards,
-  navItems,
-  paymentRows,
-  quickActions,
-  studentsSnapshot,
+  overdueRows,
+  recentPayments,
+  reconciliationQueue,
   topMetrics,
+  weeklyCashflow
 } from "./data/homepageMock";
-import { Button } from "./design-system/primitives/Button/Button";
-import { MetricCard } from "./design-system/patterns/MetricCard/MetricCard";
-import { PaymentRow } from "./design-system/patterns/PaymentRow/PaymentRow";
-import { SidebarNav } from "./design-system/patterns/SidebarNav/SidebarNav";
+import { MaterialShell } from "./material/MaterialShell";
 
-const navData = navItems.map((label: string, index: number) => ({
-  label,
-  active: index === 0,
-}));
+const actionIcons = [<CloudUpload />, <PersonAdd />, <PriceChange />, <Message />];
+
+function statusColor(status: string): "success" | "warning" | "error" {
+  if (status === "late") return "error";
+  if (status === "pending") return "warning";
+  return "success";
+}
 
 function App() {
   return (
-    <div className="app-shell">
-      <aside className="sidebar">
-        <div className="brand-lockup">
-          <div className="brand-mark" aria-hidden="true">
-            <span className="brand-bar brand-bar-one" />
-            <span className="brand-bar brand-bar-two" />
-            <span className="brand-bar brand-bar-three" />
-            <span className="brand-trend" />
-          </div>
-          <div>
-            <p className="brand-name">GymLedger</p>
-            <p className="brand-tag">Controle financeiro. Performance real.</p>
-          </div>
-        </div>
+    <MaterialShell
+      eyebrow="Dashboard"
+      title="Caixa do studio sob controle."
+      description="Acompanhe receita, conciliacao e inadimplencia do dia em um painel direto para decidir a proxima acao."
+      asideTitle="Hipotese em validacao"
+      asideDescription="MVP lean ativo. Sem gateway obrigatorio, com caixa e conciliacao no centro."
+      actions={["Importar extrato", "Cadastrar aluno", "Criar plano", "Abrir regua de cobranca"].map(
+        (action, index) => (
+          <Button
+            key={action}
+            variant={index === 0 ? "contained" : "outlined"}
+            color={index === 0 ? "primary" : "inherit"}
+            startIcon={actionIcons[index]}
+          >
+            {action}
+          </Button>
+        )
+      )}
+    >
+      <Grid container spacing={2}>
+        {topMetrics.map((metric) => (
+          <Grid key={metric.title} size={{ xs: 12, sm: 6, lg: 2.4 }}>
+            <Card sx={{ height: "100%" }}>
+              <CardContent>
+                <Typography variant="overline" color="text.secondary" fontWeight={900}>
+                  {metric.title}
+                </Typography>
+                <Typography variant="h3" sx={{ mt: 1 }}>
+                  {metric.value}
+                </Typography>
+                <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                  {metric.delta}
+                </Typography>
+              </CardContent>
+            </Card>
+          </Grid>
+        ))}
+      </Grid>
 
-        <div className="gym-summary">
-          <span className="summary-label">Conta principal</span>
-          <strong>Nova Era Fitness</strong>
-          <span className="summary-meta">2 unidades ativas • Stripe conectado</span>
-        </div>
+      <Grid container spacing={2}>
+        <Grid size={{ xs: 12, xl: 8 }}>
+          <Card>
+            <CardContent>
+              <Stack direction={{ xs: "column", md: "row" }} gap={2} sx={{ justifyContent: "space-between" }}>
+                <Box>
+                  <Typography variant="overline" color="text.secondary" fontWeight={900}>
+                    Dashboard financeiro
+                  </Typography>
+                  <Typography variant="h2">
+                    Receita prevista, caixa e conciliacao sem depender de Stripe
+                  </Typography>
+                </Box>
+                <Chip label="Atualizado ha 2 min" color="secondary" variant="outlined" />
+              </Stack>
 
-        <SidebarNav items={navData} />
+              <Grid container spacing={1.5} sx={{ mt: 2 }}>
+                {weeklyCashflow.map((entry) => (
+                  <Grid key={entry.day} size={{ xs: 6, md: 2.4 }}>
+                    <Card variant="outlined" sx={{ boxShadow: "none" }}>
+                      <CardContent>
+                        <Typography variant="overline" color="text.secondary" fontWeight={900}>
+                          {entry.day}
+                        </Typography>
+                        <Typography variant="h3">{entry.amount}</Typography>
+                      </CardContent>
+                    </Card>
+                  </Grid>
+                ))}
+              </Grid>
 
-        <div className="sidebar-card">
-          <span className="summary-label">Atalho rapido</span>
-          <strong>Gerar treino com IA</strong>
-          <p>Use objetivo, nivel e frequencia para criar um rascunho editavel.</p>
-        </div>
-      </aside>
+              <Grid container spacing={2} sx={{ mt: 1 }}>
+                <Grid size={{ xs: 12, md: 6 }}>
+                  <Card variant="outlined" sx={{ boxShadow: "none", height: "100%" }}>
+                    <CardContent>
+                      <Typography variant="overline" color="text.secondary" fontWeight={900}>
+                        O que valida o MVP
+                      </Typography>
+                      <Stack spacing={1.25} sx={{ mt: 1 }}>
+                        {[
+                          "Upload de CSV ou OFX com conciliacao semiautomatica.",
+                          "Livro-caixa com entradas, saidas e saldo real do mes.",
+                          "Mensalidades previsiveis por plano e status financeiro por aluno."
+                        ].map((item) => (
+                          <Typography key={item} variant="body2" color="text.secondary">
+                            {item}
+                          </Typography>
+                        ))}
+                      </Stack>
+                    </CardContent>
+                  </Card>
+                </Grid>
+                <Grid size={{ xs: 12, md: 6 }}>
+                  <Card variant="outlined" sx={{ boxShadow: "none", height: "100%" }}>
+                    <CardContent>
+                      <Typography variant="overline" color="text.secondary" fontWeight={900}>
+                        Aprendizado da semana
+                      </Typography>
+                      <Stack direction="row" gap={1} sx={{ mt: 1, flexWrap: "wrap" }}>
+                        <Chip label="10 matches automaticos" color="success" />
+                        <Chip label="4 conciliacoes manuais" color="warning" />
+                        <Chip label="3 exportacoes" variant="outlined" />
+                      </Stack>
+                      <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
+                        A home evidencia o ciclo build-measure-learn do MVP, em vez de vender
+                        modulos que o plano colocou para depois.
+                      </Typography>
+                    </CardContent>
+                  </Card>
+                </Grid>
+              </Grid>
+            </CardContent>
+          </Card>
+        </Grid>
 
-      <main className="dashboard-shell">
-        <header className="dashboard-header">
-          <div>
-            <p className="eyebrow">Dashboard do gestor</p>
-            <h1>
-              Boa tarde, Luis. Sua academia esta operando com{" "}
-              <span className="accent-text">previsibilidade.</span>
-            </h1>
-            <p className="header-copy">
-              Acompanhe receita, cobrancas, alunos e execucao da equipe a partir
-              da tela principal do produto.
-            </p>
-          </div>
+        <Grid size={{ xs: 12, xl: 4 }}>
+          <Card sx={{ height: "100%", bgcolor: "#102017", color: "white" }}>
+            <CardContent>
+              <Typography variant="overline" sx={{ color: "rgba(255,255,255,0.7)" }} fontWeight={900}>
+                Regua manual-assistida
+              </Typography>
+              <Typography variant="h2">Precisa cobrar hoje</Typography>
+              <Stack spacing={1.5} sx={{ mt: 2 }}>
+                {cadenceItems.map((item) => (
+                  <Card key={item.window} sx={{ bgcolor: "rgba(255,255,255,0.08)", color: "white", boxShadow: "none" }}>
+                    <CardContent>
+                      <Stack direction="row" gap={2} sx={{ justifyContent: "space-between" }}>
+                        <Box>
+                          <Typography variant="overline" sx={{ color: "rgba(255,255,255,0.62)" }}>
+                            {item.window}
+                          </Typography>
+                          <Typography fontWeight={800}>{item.title}</Typography>
+                        </Box>
+                        <Chip label={item.count} color="success" size="small" />
+                      </Stack>
+                      <Button fullWidth variant="contained" color="primary" sx={{ mt: 2 }}>
+                        {item.action}
+                      </Button>
+                    </CardContent>
+                  </Card>
+                ))}
+              </Stack>
+            </CardContent>
+          </Card>
+        </Grid>
+      </Grid>
 
-          <div className="header-actions">
-            {quickActions.map((action: string, index: number) => (
-              <Button
-                key={action}
-                variant={index === 0 ? "primary" : "secondary"}
-                size="md"
-              >
-                {action}
-              </Button>
-            ))}
-          </div>
-        </header>
+      <Grid container spacing={2}>
+        {moduleCards.map((module) => (
+          <Grid key={module.title} size={{ xs: 12, md: 6, xl: 3 }}>
+            <Card sx={{ height: "100%" }}>
+              <CardContent>
+                <Typography variant="overline" color="text.secondary" fontWeight={900}>
+                  {module.title}
+                </Typography>
+                <Typography variant="h3" sx={{ mt: 1 }}>
+                  {module.stat}
+                </Typography>
+                <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                  {module.description}
+                </Typography>
+              </CardContent>
+            </Card>
+          </Grid>
+        ))}
+      </Grid>
 
-        <section className="metrics-grid" aria-label="Indicadores principais">
-          {topMetrics.map(
-            (metric: { title: string; value: string; delta: string; tone: string }) => (
-              <MetricCard
-                key={metric.title}
-                title={metric.title}
-                value={metric.value}
-                delta={metric.delta}
-                variant={metric.tone as "emerald" | "blue" | "amber" | "slate"}
-                trend={metric.tone === "amber" ? "down" : "up"}
-              />
-            )
-          )}
-        </section>
+      <Grid container spacing={2}>
+        <Grid size={{ xs: 12, xl: 8 }}>
+          <Card>
+            <CardContent>
+              <Stack direction={{ xs: "column", md: "row" }} gap={2} sx={{ justifyContent: "space-between" }}>
+                <Box>
+                  <Typography variant="overline" color="text.secondary" fontWeight={900}>
+                    Top 5 atrasados
+                  </Typography>
+                  <Typography variant="h2">Mensalidades vencidas que pedem acao imediata</Typography>
+                </Box>
+                <Chip label={`${overdueRows.length} casos prioritarios`} color="warning" />
+              </Stack>
+              <TableContainer sx={{ mt: 2 }}>
+                <Table size="small">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Aluno</TableCell>
+                      <TableCell>Plano</TableCell>
+                      <TableCell>Vencimento</TableCell>
+                      <TableCell>Valor</TableCell>
+                      <TableCell>Status</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {overdueRows.map((row) => (
+                      <TableRow key={`${row.student}-${row.dueDate}`}>
+                        <TableCell sx={{ fontWeight: 800 }}>{row.student}</TableCell>
+                        <TableCell>{row.plan}</TableCell>
+                        <TableCell>{row.dueDate}</TableCell>
+                        <TableCell sx={{ fontWeight: 800 }}>{row.amount}</TableCell>
+                        <TableCell>
+                          <Chip label={row.status} color={statusColor(row.status)} size="small" />
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </CardContent>
+          </Card>
 
-        <section className="hero-grid">
-          <article className="focus-panel">
-            <div className="panel-heading">
-              <div>
-                <p className="panel-kicker">Resumo financeiro</p>
-                <h2>Receita prevista vs recebida, sem sair da home</h2>
-              </div>
-              <span className="status-pill">Atualizado ha 2 min</span>
-            </div>
+          <Card sx={{ mt: 2 }}>
+            <CardContent>
+              <Typography variant="overline" color="text.secondary" fontWeight={900}>
+                Recebimentos conciliados
+              </Typography>
+              <Typography variant="h2">Ultimos recebimentos reconhecidos pelo sistema</Typography>
+              <Stack spacing={1.25} sx={{ mt: 2 }}>
+                {recentPayments.map((row) => (
+                  <PaperLikePayment key={`${row.student}-${row.date}`} row={row} />
+                ))}
+              </Stack>
+            </CardContent>
+          </Card>
+        </Grid>
 
-            <div className="cashflow-strip" aria-label="Fluxo de caixa semanal">
-              {cashflow.map((entry: { day: string; amount: string }) => (
-                <div className="cashflow-card" key={entry.day}>
-                  <span>{entry.day}</span>
-                  <strong>{entry.amount}</strong>
-                </div>
-              ))}
-            </div>
+        <Grid size={{ xs: 12, xl: 4 }}>
+          <Stack spacing={2}>
+            <Card>
+              <CardContent>
+                <Typography variant="overline" color="text.secondary" fontWeight={900}>
+                  Conciliacao pendente
+                </Typography>
+                <Typography variant="h3">O que ainda precisa de decisao manual</Typography>
+                <Stack spacing={1.25} sx={{ mt: 2 }}>
+                  {reconciliationQueue.map((item) => (
+                    <Card key={item.title} variant="outlined" sx={{ boxShadow: "none" }}>
+                      <CardContent>
+                        <Stack direction="row" gap={2} sx={{ justifyContent: "space-between" }}>
+                          <Typography fontWeight={800}>{item.title}</Typography>
+                          <Chip label={item.badge} color="secondary" size="small" />
+                        </Stack>
+                        <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                          {item.description}
+                        </Typography>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </Stack>
+              </CardContent>
+            </Card>
 
-            <div className="alert-stack">
-              {alertCards.map(
-                (alert: { title: string; description: string; action: string }) => (
-                  <article className="alert-card" key={alert.title}>
-                    <div>
-                      <h3>{alert.title}</h3>
-                      <p>{alert.description}</p>
-                    </div>
-                    <Button variant="primary" size="sm">{alert.action}</Button>
-                  </article>
-                )
-              )}
-            </div>
-          </article>
+            <Card>
+              <CardContent>
+                <Typography variant="overline" color="text.secondary" fontWeight={900}>
+                  Proximos vencimentos
+                </Typography>
+                <Typography variant="h3">Quem entra na regua nos proximos dias</Typography>
+                <Stack spacing={1.25} sx={{ mt: 2 }}>
+                  {dueSoon.map((item) => (
+                    <Card key={item.student} variant="outlined" sx={{ boxShadow: "none" }}>
+                      <CardContent>
+                        <Typography fontWeight={800}>{item.student}</Typography>
+                        <Typography variant="body2" color="text.secondary">{item.plan}</Typography>
+                        <Chip label={item.dueIn} size="small" sx={{ mt: 1 }} />
+                      </CardContent>
+                    </Card>
+                  ))}
+                </Stack>
+              </CardContent>
+            </Card>
+          </Stack>
+        </Grid>
+      </Grid>
 
-          <article className="operations-panel">
-            <div className="panel-heading">
-              <div>
-                <p className="panel-kicker">Central operacional</p>
-                <h2>O que precisa da sua atencao agora</h2>
-              </div>
-            </div>
+      <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+        <Button component={RouterLink} to="/ds" variant="text">
+          Ver Design System
+        </Button>
+      </Box>
+    </MaterialShell>
+  );
+}
 
-            <div className="operations-list">
-              <div className="operation-item">
-                <span className="operation-label">Receita em risco</span>
-                <strong>R$ 6.320</strong>
-                <p>Pagamentos em atraso ou com retentativa pendente.</p>
-              </div>
-              <div className="operation-item">
-                <span className="operation-label">Treinos na fila</span>
-                <strong>6</strong>
-                <p>Sugestoes da IA aguardando revisao dos professores.</p>
-              </div>
-              <div className="operation-item">
-                <span className="operation-label">Check-ins bloqueados</span>
-                <strong>4</strong>
-                <p>Bloqueio configuravel ativo por inadimplencia.</p>
-              </div>
-            </div>
-            <div className="operations-footer">
-              <span className="operations-signal">Gym em azul. Ledger em verde.</span>
-              <span className="operations-signal">Financeiro lidera a leitura da tela.</span>
-            </div>
-          </article>
-        </section>
-
-        <section className="modules-grid" aria-label="Modulos principais">
-          {moduleCards.map(
-            (module: { title: string; stat: string; description: string }) => (
-              <article className="module-card" key={module.title}>
-                <span className="module-title">{module.title}</span>
-                <strong>{module.stat}</strong>
-                <p>{module.description}</p>
-              </article>
-            )
-          )}
-        </section>
-
-        <section className="content-grid">
-          <article className="table-panel">
-            <div className="panel-heading">
-              <div>
-                <p className="panel-kicker">Pagamentos</p>
-                <h2>Cobrancas recentes</h2>
-              </div>
-              <span className="status-pill muted">Stripe online</span>
-            </div>
-
-            <div className="payments-table">
-              <div className="payments-head" role="row">
-                <span role="columnheader">Aluno</span>
-                <span role="columnheader">Plano</span>
-                <span role="columnheader">Status</span>
-                <span role="columnheader">Valor</span>
-                <span role="columnheader">Data</span>
-              </div>
-              {paymentRows.map(
-                (row: {
-                  student: string;
-                  plan: string;
-                  status: string;
-                  amount: string;
-                  date: string;
-                }) => (
-                  <PaymentRow key={`${row.student}-${row.date}`} {...row} />
-                )
-              )}
-            </div>
-          </article>
-
-          <div className="right-rail">
-            <article className="side-panel">
-              <div className="panel-heading">
-                <div>
-                  <p className="panel-kicker">Alunos</p>
-                  <h2>Status operacional</h2>
-                </div>
-              </div>
-
-              <div className="stack-list">
-                {studentsSnapshot.map(
-                  (student: {
-                    name: string;
-                    plan: string;
-                    financeStatus: string;
-                    workoutStatus: string;
-                  }) => (
-                    <div className="list-card" key={student.name}>
-                      <strong>{student.name}</strong>
-                      <span>{student.plan}</span>
-                      <p>{student.financeStatus}</p>
-                      <small>{student.workoutStatus}</small>
-                    </div>
-                  )
-                )}
-              </div>
-            </article>
-
-            <article className="side-panel">
-              <div className="panel-heading">
-                <div>
-                  <p className="panel-kicker">Equipe</p>
-                  <h2>Professores e pendencias</h2>
-                </div>
-              </div>
-
-              <div className="stack-list">
-                {coachBoard.map(
-                  (coach: { name: string; focus: string; pending: string }) => (
-                    <div className="list-card" key={coach.name}>
-                      <strong>{coach.name}</strong>
-                      <span>{coach.focus}</span>
-                      <small>{coach.pending}</small>
-                    </div>
-                  )
-                )}
-              </div>
-            </article>
-          </div>
-        </section>
-
-        <div className="mt-4 flex justify-end">
-          <Link to="/ds">
-            <Button variant="ghost" size="sm">
-              Ver Design System →
-            </Button>
-          </Link>
-        </div>
-      </main>
-    </div>
+function PaperLikePayment({ row }: { row: { student: string; plan: string; status: string; amount: string } }) {
+  return (
+    <Card variant="outlined" sx={{ boxShadow: "none" }}>
+      <CardContent sx={{ py: 1.5, "&:last-child": { pb: 1.5 } }}>
+        <Stack direction={{ xs: "column", sm: "row" }} gap={1} sx={{ justifyContent: "space-between" }}>
+          <Box>
+            <Typography fontWeight={800}>{row.student}</Typography>
+            <Typography variant="body2" color="text.secondary">{row.plan}</Typography>
+          </Box>
+          <Stack direction="row" gap={1} sx={{ alignItems: "center" }}>
+            <Chip label={row.status} color={row.status === "Pago" ? "success" : "warning"} size="small" />
+            <Typography fontWeight={800}>{row.amount}</Typography>
+          </Stack>
+        </Stack>
+      </CardContent>
+    </Card>
   );
 }
 

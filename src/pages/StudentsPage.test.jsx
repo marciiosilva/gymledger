@@ -2,39 +2,34 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 import { describe, expect, it } from "vitest";
-import App from "./App";
+import { StudentsPage } from "./StudentsPage";
 
-describe("App", () => {
-  it("renderiza a home interna do dono da academia", async () => {
+describe("StudentsPage", () => {
+  it("renderiza a pagina de alunos baseada no design system", async () => {
     const user = userEvent.setup();
 
     render(
       <MemoryRouter>
-        <App />
+        <StudentsPage />
       </MemoryRouter>
     );
 
     expect(
       screen.getByRole("heading", {
-        name: /caixa do studio sob controle/i
+        name: /alunos, caixa e retencao juntos/i
       })
     ).toBeInTheDocument();
 
-    expect(
-      screen.getByRole("heading", {
-        name: /mensalidades vencidas que pedem acao imediata/i
-      })
-    ).toBeInTheDocument();
-
-    expect(screen.getByText(/R\$ 18\.720/i)).toBeInTheDocument();
+    expect(screen.getByText("Alunos ativos")).toBeInTheDocument();
+    expect(screen.getByText(/marina costa/i)).toBeInTheDocument();
     expect(screen.getByText(/rafael lima/i)).toBeInTheDocument();
-    expect(screen.queryByRole("button", { name: /importar extrato/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /novo aluno/i })).not.toBeInTheDocument();
 
     await user.click(screen.getByRole("button", { name: /acoes rapidas/i }));
 
     expect(
       screen.getByRole("button", {
-        name: /importar extrato/i
+        name: /novo aluno/i
       })
     ).toBeInTheDocument();
   });

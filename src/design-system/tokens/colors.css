@@ -7,10 +7,10 @@
   --green-800: #9bd51e;
 
   /* navy */
-  --navy-900: #061735;
-  --navy-800: #081c3d;
-  --navy-700: #0d2143;
-  --navy-100: #e9eef8;
+  --navy-900: #112b4d;
+  --navy-800: #17365d;
+  --navy-700: #1f4a76;
+  --navy-100: #e8f0fa;
 
   /* amber */
   --amber-600: #b86c18;
@@ -18,7 +18,7 @@
 
   /* slate */
   --slate-500: #61718a;
-  --slate-200: rgba(7, 27, 58, 0.1);
+  --slate-200: rgba(17, 43, 77, 0.1);
   --slate-100: #f3f7f7;
   --slate-50: #f7f8fb;
 
