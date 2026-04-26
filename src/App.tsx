@@ -1,5 +1,6 @@
 import { Link as RouterLink } from "react-router-dom";
 import CloudUpload from "@mui/icons-material/CloudUpload";
+import CalendarMonth from "@mui/icons-material/CalendarMonth";
 import Message from "@mui/icons-material/Message";
 import PersonAdd from "@mui/icons-material/PersonAdd";
 import PriceChange from "@mui/icons-material/PriceChange";
@@ -40,6 +41,12 @@ const sectionSpacing = { xs: 2.25, md: 2 };
 const metricIcons = [<TrendingUp fontSize="small" />, <TaskAlt fontSize="small" />, <PriceChange fontSize="small" />, <WarningAmber fontSize="small" />];
 const metricProgress = [92, 82, 58, 33];
 const metricColor = ["primary", "success", "warning", "error"] as const;
+const surfaceCardSx = {
+  border: "1px solid",
+  borderColor: "divider",
+  borderRadius: 0.5,
+  boxShadow: "0 10px 24px rgba(15, 23, 42, 0.06)"
+};
 const cardContentSx = {
   p: { xs: 2, sm: 2.5 },
   "&:last-child": {
@@ -57,8 +64,8 @@ function App() {
   return (
     <MaterialShell
       eyebrow="Dashboard"
-      title="Caixa do studio sob controle."
-      description="Acompanhe receita, conciliacao e inadimplencia do dia em um painel direto para decidir a proxima acao."
+      title=""
+      description=""
       asideTitle="Hipotese em validacao"
       asideDescription="MVP lean ativo. Sem gateway obrigatorio, com caixa e conciliacao no centro."
       actions={["Importar extrato", "Cadastrar aluno", "Criar plano", "Abrir regua de cobranca"].map(
@@ -87,6 +94,7 @@ function App() {
                   height: "100%",
                   border: "1px solid",
                   borderColor: "divider",
+                  borderRadius: 0.5,
                   background:
                     "linear-gradient(180deg, rgba(255,255,255,0.96) 0%, rgba(247,250,249,0.9) 100%)"
                 }}
@@ -120,7 +128,7 @@ function App() {
                     sx={{
                       mt: 1.25,
                       height: 8,
-                      borderRadius: 999,
+                      borderRadius: 1,
                       bgcolor: "action.hover"
                     }}
                   />
@@ -136,43 +144,78 @@ function App() {
           <Card>
             <CardContent sx={cardContentSx}>
               <Stack
-                direction={{ xs: "column", md: "row" }}
-                gap={{ xs: 1.5, md: 2 }}
-                sx={{ justifyContent: "space-between" }}
+                direction="row"
+                gap={1}
+                sx={{ justifyContent: "space-between", alignItems: "center" }}
               >
                 <Box>
-                  <Typography variant="overline" color="text.secondary" fontWeight={900}>
-                    Dashboard financeiro
-                  </Typography>
                   <Typography
-                    component="h2"
+                    variant="overline"
+                    color="text.secondary"
                     sx={{
-                      mt: 0.5,
-                      fontSize: { xs: "2.2rem", sm: "2.6rem", md: "3.4rem" },
-                      lineHeight: { xs: 1.15, sm: 1.1 },
-                      letterSpacing: "-0.02em"
+                      fontFamily: "Inter, system-ui, sans-serif",
+                      fontWeight: 800,
+                      fontSize: "0.7rem",
+                      letterSpacing: "0.1em",
+                      lineHeight: 1.2
                     }}
                   >
-                    Receita prevista, caixa e conciliacao sem depender de Stripe
+                    Dashboard financeiro
                   </Typography>
                 </Box>
                 <Chip
                   label="Atualizado ha 2 min"
                   color="secondary"
                   variant="outlined"
-                  sx={{ alignSelf: { xs: "flex-start", md: "center" } }}
+                  size="small"
+                  sx={{ height: 22, fontSize: "0.7rem", fontWeight: 700 }}
                 />
               </Stack>
 
               <Grid container spacing={{ xs: 1.75, md: 1.5 }} sx={{ mt: 2 }}>
                 {weeklyCashflow.map((entry) => (
                   <Grid key={entry.day} size={{ xs: 6, md: 2.4 }}>
-                    <Card variant="outlined" sx={{ boxShadow: "none" }}>
-                      <CardContent sx={cardContentSx}>
-                        <Typography variant="overline" color="text.secondary" fontWeight={900}>
-                          {entry.day}
+                    <Card
+                      variant="outlined"
+                      sx={{
+                        ...surfaceCardSx,
+                        borderRadius: 0.5,
+                        boxShadow: "none",
+                        bgcolor: "rgba(255,255,255,0.92)"
+                      }}
+                    >
+                      <CardContent sx={{ p: { xs: 1.5, sm: 1.75 }, "&:last-child": { pb: { xs: 1.5, sm: 1.75 } } }}>
+                        <Stack direction="row" gap={1} sx={{ alignItems: "center" }}>
+                          <Box
+                            sx={{
+                              width: 30,
+                              height: 30,
+                              borderRadius: 0.5,
+                              display: "grid",
+                              placeItems: "center",
+                              bgcolor: "rgba(25,118,210,0.10)",
+                              color: "primary.main",
+                              flexShrink: 0
+                            }}
+                          >
+                            <CalendarMonth sx={{ fontSize: 18 }} />
+                          </Box>
+                          <Typography variant="overline" color="text.secondary" fontWeight={900} sx={{ lineHeight: 1 }}>
+                            {entry.day}
+                          </Typography>
+                        </Stack>
+                        <Typography
+                          variant="h5"
+                          sx={{
+                            mt: 0.8,
+                            fontWeight: 800,
+                            letterSpacing: "-0.01em",
+                            fontSize: { xs: "1.45rem", sm: "1.55rem", md: "1.5rem" },
+                            lineHeight: 1.1
+                          }}
+                        >
+                          {entry.amount}
                         </Typography>
-                        <Typography variant="h3">{entry.amount}</Typography>
                       </CardContent>
                     </Card>
                   </Grid>
@@ -181,7 +224,7 @@ function App() {
 
               <Grid container spacing={sectionSpacing} sx={{ mt: 1 }}>
                 <Grid size={{ xs: 12, md: 6 }}>
-                  <Card variant="outlined" sx={{ boxShadow: "none", height: "100%" }}>
+                  <Card variant="outlined" sx={{ ...surfaceCardSx, borderRadius: 0.5, boxShadow: "none", height: "100%", bgcolor: "rgba(246,250,247,0.72)" }}>
                     <CardContent sx={cardContentSx}>
                       <Typography variant="overline" color="text.secondary" fontWeight={900}>
                         O que valida o MVP
@@ -201,7 +244,7 @@ function App() {
                   </Card>
                 </Grid>
                 <Grid size={{ xs: 12, md: 6 }}>
-                  <Card variant="outlined" sx={{ boxShadow: "none", height: "100%" }}>
+                  <Card variant="outlined" sx={{ ...surfaceCardSx, borderRadius: 0.5, boxShadow: "none", height: "100%", bgcolor: "rgba(250,249,243,0.8)" }}>
                     <CardContent sx={cardContentSx}>
                       <Typography variant="overline" color="text.secondary" fontWeight={900}>
                         Aprendizado da semana
@@ -224,32 +267,58 @@ function App() {
         </Grid>
 
         <Grid size={{ xs: 12, xl: 4 }}>
-          <Card sx={{ height: "100%", bgcolor: "#102017", color: "white" }}>
+          <Card
+            sx={{
+              height: "100%",
+              color: "white",
+              borderRadius: 0.5,
+              background: "linear-gradient(175deg, #0d1f14 0%, #123720 52%, #1b4c2e 100%)",
+              boxShadow: "0 16px 34px rgba(9, 30, 20, 0.34)"
+            }}
+          >
             <CardContent sx={cardContentSx}>
               <Typography variant="overline" sx={{ color: "rgba(255,255,255,0.7)" }} fontWeight={900}>
                 Regua manual-assistida
               </Typography>
               <Typography variant="h2">Precisa cobrar hoje</Typography>
-              <Stack spacing={1.5} sx={{ mt: 2 }}>
+              <Grid container spacing={1.25} sx={{ mt: 2 }}>
                 {cadenceItems.map((item) => (
-                  <Card key={item.window} sx={{ bgcolor: "rgba(255,255,255,0.08)", color: "white", boxShadow: "none" }}>
-                    <CardContent sx={cardContentSx}>
-                      <Stack direction="row" gap={2} sx={{ justifyContent: "space-between" }}>
-                        <Box>
-                          <Typography variant="overline" sx={{ color: "rgba(255,255,255,0.62)" }}>
-                            {item.window}
-                          </Typography>
-                          <Typography fontWeight={800}>{item.title}</Typography>
-                        </Box>
-                        <Chip label={item.count} color="success" size="small" />
-                      </Stack>
-                      <Button fullWidth variant="contained" color="primary" sx={{ mt: 2 }}>
-                        {item.action}
-                      </Button>
-                    </CardContent>
-                  </Card>
+                  <Grid key={item.window} size={{ xs: 12, md: 6, xl: 6 }}>
+                    <Card
+                      sx={{
+                        height: "100%",
+                        bgcolor: "rgba(255,255,255,0.09)",
+                        color: "white",
+                        boxShadow: "none",
+                        border: "1px solid rgba(255,255,255,0.14)",
+                        borderRadius: 0.5
+                      }}
+                    >
+                      <CardContent sx={{ p: { xs: 1.5, sm: 1.75 }, "&:last-child": { pb: { xs: 1.5, sm: 1.75 } } }}>
+                        <Stack direction="row" gap={1.5} sx={{ justifyContent: "space-between" }}>
+                          <Box>
+                            <Typography variant="overline" sx={{ color: "rgba(255,255,255,0.62)" }}>
+                              {item.window}
+                            </Typography>
+                            <Typography fontWeight={800} sx={{ lineHeight: 1.2 }}>
+                              {item.title}
+                            </Typography>
+                          </Box>
+                          <Chip label={item.count} color="success" size="small" />
+                        </Stack>
+                        <Button
+                          fullWidth
+                          variant="contained"
+                          color="primary"
+                          sx={{ mt: 1.25, borderRadius: 0.5, fontWeight: 700, textTransform: "none" }}
+                        >
+                          {item.action}
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  </Grid>
                 ))}
-              </Stack>
+              </Grid>
             </CardContent>
           </Card>
         </Grid>
@@ -258,12 +327,18 @@ function App() {
       <Grid container spacing={sectionSpacing}>
         {moduleCards.map((module) => (
           <Grid key={module.title} size={{ xs: 12, md: 6, xl: 3 }}>
-            <Card sx={{ height: "100%" }}>
+            <Card
+              sx={{
+                ...surfaceCardSx,
+                height: "100%",
+                background: "linear-gradient(180deg, rgba(255,255,255,0.98) 0%, rgba(248,250,252,0.95) 100%)"
+              }}
+            >
               <CardContent sx={cardContentSx}>
                 <Typography variant="overline" color="text.secondary" fontWeight={900}>
                   {module.title}
                 </Typography>
-                <Typography variant="h3" sx={{ mt: 1 }}>
+                <Typography variant="h3" sx={{ mt: 1, lineHeight: 1.08 }}>
                   {module.stat}
                 </Typography>
                 <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
@@ -277,7 +352,7 @@ function App() {
 
       <Grid container spacing={sectionSpacing}>
         <Grid size={{ xs: 12, xl: 8 }}>
-          <Card>
+          <Card sx={surfaceCardSx}>
             <CardContent sx={cardContentSx}>
               <Stack direction={{ xs: "column", md: "row" }} gap={2} sx={{ justifyContent: "space-between" }}>
                 <Box>
@@ -288,20 +363,20 @@ function App() {
                 </Box>
                 <Chip label={`${overdueRows.length} casos prioritarios`} color="warning" />
               </Stack>
-              <TableContainer sx={{ mt: 2 }}>
+              <TableContainer sx={{ mt: 2, border: "1px solid", borderColor: "divider", borderRadius: 0.5 }}>
                 <Table size="small">
-                  <TableHead>
+                  <TableHead sx={{ bgcolor: "rgba(17,24,39,0.04)" }}>
                     <TableRow>
-                      <TableCell>Aluno</TableCell>
-                      <TableCell>Plano</TableCell>
-                      <TableCell>Vencimento</TableCell>
-                      <TableCell>Valor</TableCell>
-                      <TableCell>Status</TableCell>
+                      <TableCell sx={{ fontWeight: 800 }}>Aluno</TableCell>
+                      <TableCell sx={{ fontWeight: 800 }}>Plano</TableCell>
+                      <TableCell sx={{ fontWeight: 800 }}>Vencimento</TableCell>
+                      <TableCell sx={{ fontWeight: 800 }}>Valor</TableCell>
+                      <TableCell sx={{ fontWeight: 800 }}>Status</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
                     {overdueRows.map((row) => (
-                      <TableRow key={`${row.student}-${row.dueDate}`}>
+                      <TableRow key={`${row.student}-${row.dueDate}`} sx={{ "&:last-child td": { borderBottom: 0 } }}>
                         <TableCell sx={{ fontWeight: 800 }}>{row.student}</TableCell>
                         <TableCell>{row.plan}</TableCell>
                         <TableCell>{row.dueDate}</TableCell>
@@ -317,7 +392,7 @@ function App() {
             </CardContent>
           </Card>
 
-          <Card sx={{ mt: { xs: 2.25, md: 2 } }}>
+          <Card sx={{ ...surfaceCardSx, mt: { xs: 2.25, md: 2 } }}>
             <CardContent sx={cardContentSx}>
               <Typography variant="overline" color="text.secondary" fontWeight={900}>
                 Recebimentos conciliados
@@ -336,47 +411,53 @@ function App() {
 
         <Grid size={{ xs: 12, xl: 4 }}>
           <Stack spacing={{ xs: 2.25, md: 2 }}>
-            <Card>
+            <Card sx={surfaceCardSx}>
               <CardContent sx={cardContentSx}>
                 <Typography variant="overline" color="text.secondary" fontWeight={900}>
                   Conciliacao pendente
                 </Typography>
                 <Typography variant="h3">O que ainda precisa de decisao manual</Typography>
-                <Stack spacing={1.25} sx={{ mt: 2 }}>
+                <Grid container spacing={1.25} sx={{ mt: 2 }}>
                   {reconciliationQueue.map((item) => (
-                    <Card key={item.title} variant="outlined" sx={{ boxShadow: "none" }}>
-                      <CardContent sx={cardContentSx}>
-                        <Stack direction="row" gap={2} sx={{ justifyContent: "space-between" }}>
-                          <Typography fontWeight={800}>{item.title}</Typography>
-                          <Chip label={item.badge} color="secondary" size="small" />
-                        </Stack>
-                        <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                          {item.description}
-                        </Typography>
-                      </CardContent>
-                    </Card>
+                    <Grid key={item.title} size={{ xs: 12, sm: 6 }}>
+                      <Card variant="outlined" sx={{ ...surfaceCardSx, boxShadow: "none", borderRadius: 0.5, height: "100%" }}>
+                        <CardContent sx={{ p: { xs: 1.5, sm: 1.75 }, "&:last-child": { pb: { xs: 1.5, sm: 1.75 } } }}>
+                          <Stack direction="row" gap={2} sx={{ justifyContent: "space-between" }}>
+                            <Typography fontWeight={800}>{item.title}</Typography>
+                            <Chip label={item.badge} color="secondary" size="small" />
+                          </Stack>
+                          <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                            {item.description}
+                          </Typography>
+                        </CardContent>
+                      </Card>
+                    </Grid>
                   ))}
-                </Stack>
+                </Grid>
               </CardContent>
             </Card>
 
-            <Card>
+            <Card sx={surfaceCardSx}>
               <CardContent sx={cardContentSx}>
                 <Typography variant="overline" color="text.secondary" fontWeight={900}>
                   Proximos vencimentos
                 </Typography>
                 <Typography variant="h3">Quem entra na regua nos proximos dias</Typography>
-                <Stack spacing={1.25} sx={{ mt: 2 }}>
+                <Grid container spacing={1.25} sx={{ mt: 2 }}>
                   {dueSoon.map((item) => (
-                    <Card key={item.student} variant="outlined" sx={{ boxShadow: "none" }}>
-                      <CardContent sx={cardContentSx}>
-                        <Typography fontWeight={800}>{item.student}</Typography>
-                        <Typography variant="body2" color="text.secondary">{item.plan}</Typography>
-                        <Chip label={item.dueIn} size="small" sx={{ mt: 1 }} />
-                      </CardContent>
-                    </Card>
+                    <Grid key={item.student} size={{ xs: 12, sm: 6, md: 4 }}>
+                      <Card variant="outlined" sx={{ ...surfaceCardSx, boxShadow: "none", borderRadius: 0.5, height: "100%" }}>
+                        <CardContent sx={{ p: { xs: 1.5, sm: 1.75 }, "&:last-child": { pb: { xs: 1.5, sm: 1.75 } } }}>
+                          <Typography fontWeight={800}>{item.student}</Typography>
+                          <Typography variant="body2" color="text.secondary">
+                            {item.plan}
+                          </Typography>
+                          <Chip label={item.dueIn} size="small" sx={{ mt: 1, borderRadius: 0.5 }} />
+                        </CardContent>
+                      </Card>
+                    </Grid>
                   ))}
-                </Stack>
+                </Grid>
               </CardContent>
             </Card>
           </Stack>
@@ -410,7 +491,7 @@ function PaperLikePayment({ row }: { row: { student: string; plan: string; statu
               label={row.status}
               color={isPaid ? "success" : "warning"}
               size="small"
-              sx={{ mt: 0.6, borderRadius: 1.5, height: 22, fontWeight: 700, fontSize: "0.68rem" }}
+              sx={{ mt: 0.6, borderRadius: 0.5, height: 22, fontWeight: 700, fontSize: "0.68rem" }}
             />
           </Box>
 

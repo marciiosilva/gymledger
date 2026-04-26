@@ -341,24 +341,38 @@ export function MaterialShell({
             }}
           >
             <Box sx={{ minWidth: 0 }}>
-              <Typography variant="overline" color="primary.dark" fontWeight={900}>
-                {eyebrow}
-              </Typography>
               <Typography
-                variant="h1"
+                variant="overline"
+                color="primary.dark"
                 sx={{
-                  mt: 0.5,
-                  maxWidth: 720,
-                  fontSize: { xs: "1.8rem", md: "2.35rem", xl: "2.75rem" },
-                  lineHeight: 1.08
+                  fontFamily: "Inter, system-ui, sans-serif",
+                  fontWeight: 800,
+                  fontSize: "0.7rem",
+                  letterSpacing: "0.1em",
+                  lineHeight: 1.2
                 }}
               >
-                {title}
+                {eyebrow}
               </Typography>
+              {title.trim() ? (
+                <Typography
+                  variant="h1"
+                  sx={{
+                    mt: 0.5,
+                    maxWidth: 720,
+                    fontSize: { xs: "1.8rem", md: "2.35rem", xl: "2.75rem" },
+                    lineHeight: 1.08
+                  }}
+                >
+                  {title}
+                </Typography>
+              ) : null}
             </Box>
-            <Typography variant="body2" color="text.secondary" sx={{ maxWidth: 520, lineHeight: 1.6 }}>
-              {description}
-            </Typography>
+            {description.trim() ? (
+              <Typography variant="body2" color="text.secondary" sx={{ maxWidth: 520, lineHeight: 1.6 }}>
+                {description}
+              </Typography>
+            ) : null}
           </Box>
 
           {children}

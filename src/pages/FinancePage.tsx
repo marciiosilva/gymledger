@@ -2,16 +2,23 @@ import AccountBalance from "@mui/icons-material/AccountBalance";
 import Add from "@mui/icons-material/Add";
 import CloudUpload from "@mui/icons-material/CloudUpload";
 import Download from "@mui/icons-material/Download";
+import ExpandMore from "@mui/icons-material/ExpandMore";
 import FilterList from "@mui/icons-material/FilterList";
 import MoreVert from "@mui/icons-material/MoreVert";
+import PendingActions from "@mui/icons-material/PendingActions";
+import ReceiptLong from "@mui/icons-material/ReceiptLong";
 import Search from "@mui/icons-material/Search";
 import TaskAlt from "@mui/icons-material/TaskAlt";
+import TrendingDown from "@mui/icons-material/TrendingDown";
+import TrendingUp from "@mui/icons-material/TrendingUp";
+import WarningAmber from "@mui/icons-material/WarningAmber";
 import {
   Box,
   Button,
   Card,
   CardContent,
   Chip,
+  Collapse,
   Grid,
   IconButton,
   InputAdornment,
@@ -28,6 +35,7 @@ import {
   Tooltip,
   Typography
 } from "@mui/material";
+import { useState } from "react";
 import {
   cashflowSummary,
   expenseBreakdown,
@@ -37,6 +45,24 @@ import {
   transactionRows
 } from "../data/financeMock";
 import { MaterialShell } from "../material/MaterialShell";
+
+const financeMetricIcons = [
+  <TaskAlt fontSize="small" />,
+  <PendingActions fontSize="small" />,
+  <ReceiptLong fontSize="small" />,
+  <WarningAmber fontSize="small" />
+];
+
+const financeMetricAccent = ["primary.main", "info.main", "text.secondary", "warning.main"] as const;
+
+const cashflowIcons = [
+  <TrendingUp fontSize="small" />,
+  <TaskAlt fontSize="small" />,
+  <TrendingDown fontSize="small" />,
+  <AccountBalance fontSize="small" />
+];
+
+const cashflowAccent = ["success.main", "primary.main", "warning.main", "info.main"] as const;
 
 function statusColor(status: string): "success" | "warning" | "error" {
   if (status === "late") return "error";
@@ -51,6 +77,8 @@ function badgeColor(tone: string): "success" | "warning" | "secondary" {
 }
 
 export function FinancePage() {
+  const [bookFiltersOpen, setBookFiltersOpen] = useState(false);
+
   return (
     <MaterialShell
       eyebrow="Financeiro"
@@ -73,23 +101,52 @@ export function FinancePage() {
       }
     >
       <Grid container spacing={2}>
-        {financeMetrics.map((metric) => (
-          <Grid key={metric.title} size={{ xs: 12, sm: 6, xl: 3 }}>
-            <Card sx={{ height: "100%" }}>
-              <CardContent>
-                <Typography variant="overline" color="text.secondary" fontWeight={900}>
-                  {metric.title}
-                </Typography>
-                <Typography variant="h3" sx={{ mt: 1 }}>
-                  {metric.value}
-                </Typography>
-                <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                  {metric.delta}
-                </Typography>
-              </CardContent>
-            </Card>
-          </Grid>
-        ))}
+        {financeMetrics.map((metric, index) => {
+          const icon = financeMetricIcons[index] ?? <AccountBalance fontSize="small" />;
+          const accent = financeMetricAccent[index] ?? "primary.main";
+
+          return (
+            <Grid key={metric.title} size={{ xs: 12, sm: 6, md: 3 }}>
+              <Card
+                sx={{
+                  height: "100%",
+                  border: "1px solid",
+                  borderColor: "divider",
+                  borderRadius: 0.5,
+                  background:
+                    "linear-gradient(180deg, rgba(255,255,255,0.98) 0%, rgba(247,250,249,0.92) 100%)"
+                }}
+              >
+                <CardContent sx={{ p: { xs: 1.5, sm: 1.75 }, "&:last-child": { pb: { xs: 1.5, sm: 1.75 } } }}>
+                  <Stack direction="row" sx={{ alignItems: "center", justifyContent: "space-between" }}>
+                    <Typography variant="overline" color="text.secondary" fontWeight={900}>
+                      {metric.title}
+                    </Typography>
+                    <Box
+                      sx={{
+                        width: 28,
+                        height: 28,
+                        borderRadius: 0.5,
+                        display: "grid",
+                        placeItems: "center",
+                        bgcolor: "action.hover",
+                        color: accent
+                      }}
+                    >
+                      {icon}
+                    </Box>
+                  </Stack>
+                  <Typography variant="h4" sx={{ mt: 0.8, lineHeight: 1.08 }}>
+                    {metric.value}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary" sx={{ mt: 0.75 }}>
+                    {metric.delta}
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+          );
+        })}
       </Grid>
 
       <Grid container spacing={2}>
@@ -102,28 +159,58 @@ export function FinancePage() {
                     <Typography variant="overline" color="text.secondary" fontWeight={900}>
                       Fluxo de caixa
                     </Typography>
-                    <Typography variant="h2">Entradas, saidas e saldo atual do mes</Typography>
                   </Box>
                   <Chip label="Atualizado ha 2 min" color="secondary" variant="outlined" />
                 </Stack>
                 <Grid container spacing={1.5} sx={{ mt: 2 }}>
-                  {cashflowSummary.map((item) => (
-                    <Grid key={item.label} size={{ xs: 12, sm: 6, xl: 3 }}>
-                      <Card variant="outlined" sx={{ boxShadow: "none" }}>
-                        <CardContent>
-                          <Typography variant="overline" color="text.secondary" fontWeight={900}>
-                            {item.label}
-                          </Typography>
-                          <Typography variant="h3" sx={{ mt: 1 }}>
-                            {item.amount}
-                          </Typography>
-                          <Typography variant="body2" color="text.secondary">
-                            {item.detail}
-                          </Typography>
-                        </CardContent>
-                      </Card>
-                    </Grid>
-                  ))}
+                  {cashflowSummary.map((item, index) => {
+                    const icon = cashflowIcons[index] ?? <AccountBalance fontSize="small" />;
+                    const accent = cashflowAccent[index] ?? "primary.main";
+
+                    return (
+                      <Grid key={item.label} size={{ xs: 12, sm: 6, md: 3 }}>
+                        <Card
+                          variant="outlined"
+                          sx={{
+                            height: "100%",
+                            boxShadow: "none",
+                            border: "1px solid",
+                            borderColor: "divider",
+                            borderRadius: 0.5,
+                            background:
+                              "linear-gradient(180deg, rgba(255,255,255,0.98) 0%, rgba(247,250,249,0.92) 100%)"
+                          }}
+                        >
+                          <CardContent sx={{ p: { xs: 1.5, sm: 1.75 }, "&:last-child": { pb: { xs: 1.5, sm: 1.75 } } }}>
+                            <Stack direction="row" sx={{ alignItems: "center", justifyContent: "space-between" }}>
+                              <Typography variant="overline" color="text.secondary" fontWeight={900}>
+                                {item.label}
+                              </Typography>
+                              <Box
+                                sx={{
+                                  width: 28,
+                                  height: 28,
+                                  borderRadius: 0.5,
+                                  display: "grid",
+                                  placeItems: "center",
+                                  bgcolor: "action.hover",
+                                  color: accent
+                                }}
+                              >
+                                {icon}
+                              </Box>
+                            </Stack>
+                            <Typography variant="h4" sx={{ mt: 0.8, lineHeight: 1.08 }}>
+                              {item.amount}
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary" sx={{ mt: 0.75 }}>
+                              {item.detail}
+                            </Typography>
+                          </CardContent>
+                        </Card>
+                      </Grid>
+                    );
+                  })}
                 </Grid>
               </CardContent>
             </Card>
@@ -135,50 +222,88 @@ export function FinancePage() {
                 </Typography>
                 <Typography variant="h2">Lancamentos recentes e status de conciliacao</Typography>
 
-                <Grid container spacing={1.5} sx={{ mt: 2 }}>
-                  <Grid size={{ xs: 12, lg: 4 }}>
-                    <TextField
-                      fullWidth
-                      label="Buscar lancamento"
-                      placeholder="Aluno, descricao ou categoria"
-                      slotProps={{
-                        input: { startAdornment: (
-                          <InputAdornment position="start">
-                            <Search />
-                          </InputAdornment>
-                        ) }
-                      }}
-                    />
-                  </Grid>
-                  <Grid size={{ xs: 12, sm: 6, lg: 2 }}>
-                    <TextField fullWidth select label="Periodo" defaultValue="abril">
-                      <MenuItem value="abril">Abril 2026</MenuItem>
-                      <MenuItem value="marco">Marco 2026</MenuItem>
-                      <MenuItem value="trimestre">Ultimo trimestre</MenuItem>
-                    </TextField>
-                  </Grid>
-                  <Grid size={{ xs: 12, sm: 6, lg: 2 }}>
-                    <TextField fullWidth select label="Conta" defaultValue="todas">
-                      <MenuItem value="todas">Todas as contas</MenuItem>
-                      <MenuItem value="nubank">Nubank PJ</MenuItem>
-                      <MenuItem value="itau">Itau</MenuItem>
-                      <MenuItem value="stone">Stone</MenuItem>
-                    </TextField>
-                  </Grid>
-                  <Grid size={{ xs: 12, sm: 6, lg: 2 }}>
-                    <TextField fullWidth select label="Tipo" defaultValue="todos">
-                      <MenuItem value="todos">Entradas e saidas</MenuItem>
-                      <MenuItem value="entrada">Entradas</MenuItem>
-                      <MenuItem value="saida">Saidas</MenuItem>
-                      <MenuItem value="pendentes">Pendentes</MenuItem>
-                    </TextField>
-                  </Grid>
-                  <Grid size={{ xs: 12, sm: 6, lg: 2 }}>
-                    <Button fullWidth variant="outlined" startIcon={<FilterList />} sx={{ height: "100%" }}>
-                      Filtrar
-                    </Button>
-                  </Grid>
-                </Grid>
+                <Stack direction="row" sx={{ mt: 1.5, alignItems: "center", justifyContent: "flex-end" }}>
+                  <Button
+                    variant="text"
+                    size="small"
+                    onClick={() => setBookFiltersOpen((open) => !open)}
+                    endIcon={
+                      <ExpandMore
+                        sx={{
+                          transition: "transform 160ms ease",
+                          transform: bookFiltersOpen ? "rotate(180deg)" : "rotate(0deg)"
+                        }}
+                      />
+                    }
+                    sx={{ textTransform: "none", fontWeight: 700 }}
+                  >
+                    {bookFiltersOpen ? "Minimizar filtros" : "Expandir filtros"}
+                  </Button>
+                </Stack>
+
+                <Collapse in={bookFiltersOpen} timeout="auto">
+                  <Box
+                    sx={{
+                      mt: 1.5,
+                      p: { xs: 1.25, md: 1.5 },
+                      border: "1px solid",
+                      borderColor: "divider",
+                      borderRadius: 0.5,
+                      bgcolor: "rgba(17,24,39,0.02)"
+                    }}
+                  >
+                    <Grid container spacing={1.25} sx={{ mt: 0 }}>
+                      <Grid size={{ xs: 12, lg: 4 }}>
+                        <TextField
+                          fullWidth
+                          size="small"
+                          label="Buscar lancamento"
+                          placeholder="Aluno, descricao ou categoria"
+                          slotProps={{
+                            input: { startAdornment: (
+                              <InputAdornment position="start">
+                                <Search fontSize="small" />
+                              </InputAdornment>
+                            ) }
+                          }}
+                        />
+                      </Grid>
+                      <Grid size={{ xs: 12, sm: 6, lg: 2 }}>
+                        <TextField fullWidth size="small" select label="Periodo" defaultValue="abril">
+                          <MenuItem value="abril">Abril 2026</MenuItem>
+                          <MenuItem value="marco">Marco 2026</MenuItem>
+                          <MenuItem value="trimestre">Ultimo trimestre</MenuItem>
+                        </TextField>
+                      </Grid>
+                      <Grid size={{ xs: 12, sm: 6, lg: 2 }}>
+                        <TextField fullWidth size="small" select label="Conta" defaultValue="todas">
+                          <MenuItem value="todas">Todas as contas</MenuItem>
+                          <MenuItem value="nubank">Nubank PJ</MenuItem>
+                          <MenuItem value="itau">Itau</MenuItem>
+                          <MenuItem value="stone">Stone</MenuItem>
+                        </TextField>
+                      </Grid>
+                      <Grid size={{ xs: 12, sm: 6, lg: 2 }}>
+                        <TextField fullWidth size="small" select label="Tipo" defaultValue="todos">
+                          <MenuItem value="todos">Entradas e saidas</MenuItem>
+                          <MenuItem value="entrada">Entradas</MenuItem>
+                          <MenuItem value="saida">Saidas</MenuItem>
+                          <MenuItem value="pendentes">Pendentes</MenuItem>
+                        </TextField>
+                      </Grid>
+                      <Grid size={{ xs: 12, sm: 6, lg: 2 }}>
+                        <Button
+                          fullWidth
+                          variant="contained"
+                          startIcon={<FilterList />}
+                          sx={{ minHeight: 40, textTransform: "none", fontWeight: 700 }}
+                        >
+                          Aplicar filtros
+                        </Button>
+                      </Grid>
+                    </Grid>
+                  </Box>
+                </Collapse>
 
                 <TableContainer sx={{ mt: 2 }}>
                   <Table size="small">
@@ -264,27 +389,31 @@ export function FinancePage() {
                   Contas a receber
                 </Typography>
                 <Typography variant="h3">Mensalidades abertas prioritarias</Typography>
-                <Stack spacing={1.25} sx={{ mt: 2 }}>
+                <Grid container spacing={1.25} sx={{ mt: 2 }}>
                   {receivableQueue.map((item) => (
-                    <Card key={item.student} variant="outlined" sx={{ boxShadow: "none" }}>
-                      <CardContent>
-                        <Stack direction="row" gap={2} sx={{ justifyContent: "space-between" }}>
-                          <Box>
-                            <Typography fontWeight={800}>{item.student}</Typography>
-                            <Typography variant="body2" color="text.secondary">
-                              {item.plan} - vence {item.dueDate}
-                            </Typography>
-                          </Box>
-                          <Chip label={item.status} color={statusColor(item.status)} size="small" />
-                        </Stack>
-                        <Stack direction="row" sx={{ mt: 1.5, justifyContent: "space-between", alignItems: "center" }}>
-                          <Typography variant="h3">{item.amount}</Typography>
-                          <Button variant="outlined">Cobrar</Button>
-                        </Stack>
-                      </CardContent>
-                    </Card>
+                    <Grid key={item.student} size={{ xs: 12, sm: 6 }}>
+                      <Card variant="outlined" sx={{ boxShadow: "none", height: "100%" }}>
+                        <CardContent>
+                          <Stack direction="row" gap={2} sx={{ justifyContent: "space-between" }}>
+                            <Box>
+                              <Typography fontWeight={800}>{item.student}</Typography>
+                              <Typography variant="body2" color="text.secondary">
+                                {item.plan} - vence {item.dueDate}
+                              </Typography>
+                            </Box>
+                            <Chip label={item.status} color={statusColor(item.status)} size="small" />
+                          </Stack>
+                          <Stack direction="row" sx={{ mt: 1.5, justifyContent: "space-between", alignItems: "center" }}>
+                            <Typography variant="h3">{item.amount}</Typography>
+                            <Button variant="outlined" size="small" sx={{ textTransform: "none", fontWeight: 700 }}>
+                              Cobrar
+                            </Button>
+                          </Stack>
+                        </CardContent>
+                      </Card>
+                    </Grid>
                   ))}
-                </Stack>
+                </Grid>
               </CardContent>
             </Card>
 
