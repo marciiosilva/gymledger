@@ -314,7 +314,7 @@ export function MaterialShell({
           minHeight: "100vh"
         }}
       >
-        <Stack spacing={3} sx={{ maxWidth: 1440, mx: "auto", px: { xs: 2, sm: 3, lg: 4 }, pt: { xs: 1.5, lg: 2.25 }, pb: { xs: 2.5, lg: 4 } }}>
+        <Stack spacing={{ xs: 3.25, sm: 3 }} sx={{ maxWidth: 1440, mx: "auto", px: { xs: 2.25, sm: 3, lg: 4 }, pt: { xs: 1.75, lg: 2.25 }, pb: { xs: 3, lg: 4 } }}>
           <Stack
             direction="row"
             spacing={1.5}
@@ -333,11 +333,11 @@ export function MaterialShell({
             sx={{
               display: "flex",
               flexDirection: { xs: "column", md: "row" },
-              gap: { xs: 1, md: 2 },
+              gap: { xs: 1.5, md: 2 },
               alignItems: { xs: "flex-start", md: "center" },
               justifyContent: "space-between",
               borderBottom: "1px solid rgba(31,31,31,0.08)",
-              pb: { xs: 2, lg: 3 }
+              pb: { xs: 2.5, lg: 3 }
             }}
           >
             <Box sx={{ minWidth: 0 }}>
