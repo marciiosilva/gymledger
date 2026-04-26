@@ -1,22 +1,18 @@
-import { render, screen } from "@testing-library/react";
+import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { MemoryRouter } from "react-router-dom";
 import { describe, expect, it } from "vitest";
+import { renderWithProviders } from "../test/renderWithProviders";
 import { StudentsPage } from "./StudentsPage";
 
 describe("StudentsPage", () => {
   it("renderiza a pagina de alunos baseada no design system", async () => {
     const user = userEvent.setup();
 
-    render(
-      <MemoryRouter>
-        <StudentsPage />
-      </MemoryRouter>
-    );
+    renderWithProviders(<StudentsPage />);
 
     expect(
       screen.getByRole("heading", {
-        name: /alunos, caixa e retencao juntos/i
+        name: /alunos, caixa e retenção no mesmo fluxo/i
       })
     ).toBeInTheDocument();
 
@@ -25,7 +21,7 @@ describe("StudentsPage", () => {
     expect(screen.getByText(/rafael lima/i)).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: /novo aluno/i })).not.toBeInTheDocument();
 
-    await user.click(screen.getByRole("button", { name: /acoes rapidas/i }));
+    await user.click(screen.getByRole("button", { name: /ações rápidas/i }));
 
     expect(
       screen.getByRole("button", {

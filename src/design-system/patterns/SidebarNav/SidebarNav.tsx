@@ -22,7 +22,7 @@ export interface NavItem {
 }
 
 const DEFAULT_ICONS: Record<string, LucideIcon> = {
-  Dashboard:   LayoutDashboard,
+  Início:      LayoutDashboard,
   Alunos:      Users,
   Financeiro:  CreditCard,
   Planos:      Layers,

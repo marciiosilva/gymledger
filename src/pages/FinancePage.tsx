@@ -15,11 +15,9 @@ import WarningAmber from "@mui/icons-material/WarningAmber";
 import {
   Box,
   Button,
-  Card,
-  CardContent,
   Chip,
   Collapse,
-  Grid,
+  Divider,
   IconButton,
   InputAdornment,
   LinearProgress,
@@ -35,8 +33,10 @@ import {
   Tooltip,
   Typography
 } from "@mui/material";
-import { useTheme } from "@mui/material/styles";
+import { alpha, useTheme } from "@mui/material/styles";
 import { useState } from "react";
+import { DashboardCard } from "../material/DashboardCard";
+import { dashboardClusterGap, dashboardKpiGridSx, dashboardMainSplitSx, dashboardSectionGap } from "../material/layout";
 import { kpiCardSurfaceGradient } from "../material/surfaces";
 import {
   cashflowSummary,
@@ -72,6 +72,13 @@ function statusColor(status: string): "success" | "warning" | "error" {
   return "success";
 }
 
+function financeStatusLabel(status: string): string {
+  if (status === "paid") return "Conciliado";
+  if (status === "pending") return "Pendente";
+  if (status === "late") return "Em atraso";
+  return status;
+}
+
 function badgeColor(tone: string): "success" | "warning" | "secondary" {
   if (tone === "warning") return "warning";
   if (tone === "success") return "success";
@@ -81,15 +88,16 @@ function badgeColor(tone: string): "success" | "warning" | "secondary" {
 export function FinancePage() {
   const [bookFiltersOpen, setBookFiltersOpen] = useState(false);
   const theme = useTheme();
+  const isDark = theme.palette.mode === "dark";
   const kpiCardSurface = kpiCardSurfaceGradient(theme);
-
+  const filterPanelBg = alpha(theme.palette.text.primary, isDark ? 0.08 : 0.02);
+  const tableHeadBg = alpha(theme.palette.text.primary, isDark ? 0.08 : 0.04);
   return (
     <MaterialShell
       eyebrow="Financeiro"
-      title="Caixa previsivel, decisao rapida."
-      description="Controle entradas, saidas, mensalidades abertas e conciliacao em uma rotina simples de fechamento."
-      asideTitle="Fechamento do mes"
-      asideDescription="Caixa, mensalidades e conciliacao com decisao rapida."
+      title="Caixa previsível para decidir rápido."
+      description="Acompanhe entradas, saídas, mensalidades abertas e conciliação em uma rotina simples de fechamento."
+      asideDescription="Caixa, mensalidades e conciliação para decidir rápido."
       actions={
         <>
           <Button variant="outlined" startIcon={<CloudUpload />}>
@@ -99,29 +107,25 @@ export function FinancePage() {
             Exportar fechamento
           </Button>
           <Button variant="contained" startIcon={<Add />}>
-            Novo lancamento
+            Novo lançamento
           </Button>
         </>
       }
     >
-      <Grid container spacing={2}>
+      <Box sx={dashboardKpiGridSx}>
         {financeMetrics.map((metric, index) => {
           const icon = financeMetricIcons[index] ?? <AccountBalance fontSize="small" />;
           const accent = financeMetricAccent[index] ?? "primary.main";
 
           return (
-            <Grid key={metric.title} size={{ xs: 12, sm: 6, md: 3 }}>
-              <Card
-                sx={{
-                  height: "100%",
-                  border: "1px solid",
-                  borderColor: "divider",
-                  borderRadius: 0.5,
-                  background: kpiCardSurface
-                }}
+              <DashboardCard
+                key={metric.title}
+                surface="kpi"
+                fullHeight
+                sx={{ background: kpiCardSurface }}
+                contentSx={{ p: { xs: 1.5, sm: 1.75 }, "&:last-child": { pb: { xs: 1.5, sm: 1.75 } } }}
               >
-                <CardContent sx={{ p: { xs: 1.5, sm: 1.75 }, "&:last-child": { pb: { xs: 1.5, sm: 1.75 } } }}>
-                  <Stack direction="row" sx={{ alignItems: "center", justifyContent: "space-between" }}>
+                <Stack direction="row" sx={{ alignItems: "center", justifyContent: "space-between" }}>
                     <Typography variant="overline" color="text.secondary" fontWeight={900}>
                       {metric.title}
                     </Typography>
@@ -139,52 +143,53 @@ export function FinancePage() {
                       {icon}
                     </Box>
                   </Stack>
-                  <Typography variant="h4" sx={{ mt: 0.8, lineHeight: 1.08 }}>
-                    {metric.value}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary" sx={{ mt: 0.75 }}>
-                    {metric.delta}
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Grid>
+                <Typography variant="h4" sx={{ mt: 0.8, lineHeight: 1.08 }}>
+                  {metric.value}
+                </Typography>
+                <Typography variant="body2" color="text.secondary" sx={{ mt: 0.75 }}>
+                  {metric.delta}
+                </Typography>
+              </DashboardCard>
           );
         })}
-      </Grid>
+      </Box>
 
-      <Grid container spacing={2}>
-        <Grid size={{ xs: 12, xl: 8 }}>
-          <Stack spacing={2}>
-            <Card>
-              <CardContent>
+      <Box sx={dashboardMainSplitSx}>
+        <Stack spacing={dashboardSectionGap} sx={{ minWidth: 0 }}>
+            <DashboardCard>
                 <Stack direction={{ xs: "column", md: "row" }} gap={2} sx={{ justifyContent: "space-between" }}>
                   <Box>
                     <Typography variant="overline" color="text.secondary" fontWeight={900}>
                       Fluxo de caixa
                     </Typography>
                   </Box>
-                  <Chip label="Atualizado ha 2 min" color="secondary" variant="outlined" />
+                  <Chip label="Atualizado há 2 min" color="secondary" variant="outlined" />
                 </Stack>
-                <Grid container spacing={1.5} sx={{ mt: 2 }}>
+                <Box
+                  sx={{
+                    display: "grid",
+                    gridTemplateColumns: {
+                      xs: "1fr",
+                      sm: "repeat(2, minmax(0, 1fr))",
+                      md: "repeat(4, minmax(0, 1fr))"
+                    },
+                    gap: dashboardClusterGap,
+                    alignItems: "stretch"
+                  }}
+                >
                   {cashflowSummary.map((item, index) => {
                     const icon = cashflowIcons[index] ?? <AccountBalance fontSize="small" />;
                     const accent = cashflowAccent[index] ?? "primary.main";
 
                     return (
-                      <Grid key={item.label} size={{ xs: 12, sm: 6, md: 3 }}>
-                        <Card
-                          variant="outlined"
-                          sx={{
-                            height: "100%",
-                            boxShadow: "none",
-                            border: "1px solid",
-                            borderColor: "divider",
-                            borderRadius: 0.5,
-                            background: kpiCardSurface
-                          }}
-                        >
-                          <CardContent sx={{ p: { xs: 1.5, sm: 1.75 }, "&:last-child": { pb: { xs: 1.5, sm: 1.75 } } }}>
-                            <Stack direction="row" sx={{ alignItems: "center", justifyContent: "space-between" }}>
+                      <DashboardCard
+                        key={item.label}
+                        sx={{
+                          background: kpiCardSurface
+                        }}
+                        contentSx={{ p: { xs: 1.5, sm: 1.75 }, "&:last-child": { pb: { xs: 1.5, sm: 1.75 } } }}
+                      >
+                        <Stack direction="row" sx={{ alignItems: "center", justifyContent: "space-between" }}>
                               <Typography variant="overline" color="text.secondary" fontWeight={900}>
                                 {item.label}
                               </Typography>
@@ -202,27 +207,23 @@ export function FinancePage() {
                                 {icon}
                               </Box>
                             </Stack>
-                            <Typography variant="h4" sx={{ mt: 0.8, lineHeight: 1.08 }}>
-                              {item.amount}
-                            </Typography>
-                            <Typography variant="body2" color="text.secondary" sx={{ mt: 0.75 }}>
-                              {item.detail}
-                            </Typography>
-                          </CardContent>
-                        </Card>
-                      </Grid>
+                        <Typography variant="h4" sx={{ mt: 0.8, lineHeight: 1.08 }}>
+                          {item.amount}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary" sx={{ mt: 0.75 }}>
+                          {item.detail}
+                        </Typography>
+                      </DashboardCard>
                     );
                   })}
-                </Grid>
-              </CardContent>
-            </Card>
+                </Box>
+            </DashboardCard>
 
-            <Card>
-              <CardContent>
+            <DashboardCard>
                 <Typography variant="overline" color="text.secondary" fontWeight={900}>
-                  Livro caixa
+                  Livro-caixa
                 </Typography>
-                <Typography variant="h2">Lancamentos recentes e status de conciliacao</Typography>
+                <Typography variant="h2">Lançamentos recentes e conciliação</Typography>
 
                 <Stack direction="row" sx={{ mt: 1.5, alignItems: "center", justifyContent: "flex-end" }}>
                   <Button
@@ -251,16 +252,16 @@ export function FinancePage() {
                       border: "1px solid",
                       borderColor: "divider",
                       borderRadius: 0.5,
-                      bgcolor: "rgba(17,24,39,0.02)"
+                      bgcolor: filterPanelBg
                     }}
                   >
-                    <Grid container spacing={1.25} sx={{ mt: 0 }}>
-                      <Grid size={{ xs: 12, lg: 4 }}>
+                    <Box sx={{ mt: 0, display: "grid", gridTemplateColumns: { xs: "1fr", lg: "2fr repeat(4, minmax(0, 1fr))" }, gap: 1 }}>
+                      <Box>
                         <TextField
                           fullWidth
                           size="small"
-                          label="Buscar lancamento"
-                          placeholder="Aluno, descricao ou categoria"
+                          label="Buscar lançamento"
+                          placeholder="Aluno, descrição ou categoria"
                           slotProps={{
                             input: { startAdornment: (
                               <InputAdornment position="start">
@@ -269,31 +270,31 @@ export function FinancePage() {
                             ) }
                           }}
                         />
-                      </Grid>
-                      <Grid size={{ xs: 12, sm: 6, lg: 2 }}>
-                        <TextField fullWidth size="small" select label="Periodo" defaultValue="abril">
+                      </Box>
+                      <Box>
+                        <TextField fullWidth size="small" select label="Período" defaultValue="abril">
                           <MenuItem value="abril">Abril 2026</MenuItem>
-                          <MenuItem value="marco">Marco 2026</MenuItem>
-                          <MenuItem value="trimestre">Ultimo trimestre</MenuItem>
+                          <MenuItem value="marco">Março 2026</MenuItem>
+                          <MenuItem value="trimestre">Último trimestre</MenuItem>
                         </TextField>
-                      </Grid>
-                      <Grid size={{ xs: 12, sm: 6, lg: 2 }}>
+                      </Box>
+                      <Box>
                         <TextField fullWidth size="small" select label="Conta" defaultValue="todas">
                           <MenuItem value="todas">Todas as contas</MenuItem>
                           <MenuItem value="nubank">Nubank PJ</MenuItem>
-                          <MenuItem value="itau">Itau</MenuItem>
+                          <MenuItem value="itau">Itaú</MenuItem>
                           <MenuItem value="stone">Stone</MenuItem>
                         </TextField>
-                      </Grid>
-                      <Grid size={{ xs: 12, sm: 6, lg: 2 }}>
+                      </Box>
+                      <Box>
                         <TextField fullWidth size="small" select label="Tipo" defaultValue="todos">
-                          <MenuItem value="todos">Entradas e saidas</MenuItem>
+                          <MenuItem value="todos">Entradas e saídas</MenuItem>
                           <MenuItem value="entrada">Entradas</MenuItem>
-                          <MenuItem value="saida">Saidas</MenuItem>
+                          <MenuItem value="saida">Saídas</MenuItem>
                           <MenuItem value="pendentes">Pendentes</MenuItem>
                         </TextField>
-                      </Grid>
-                      <Grid size={{ xs: 12, sm: 6, lg: 2 }}>
+                      </Box>
+                      <Box>
                         <Button
                           fullWidth
                           variant="contained"
@@ -302,23 +303,23 @@ export function FinancePage() {
                         >
                           Aplicar filtros
                         </Button>
-                      </Grid>
-                    </Grid>
+                      </Box>
+                    </Box>
                   </Box>
                 </Collapse>
 
-                <TableContainer sx={{ mt: 2 }}>
-                  <Table size="small">
-                    <TableHead>
+                <TableContainer sx={{ mt: 2, border: "1px solid", borderColor: "divider", borderRadius: 0.5, overflowX: "auto" }}>
+                  <Table size="small" sx={{ minWidth: 980 }}>
+                    <TableHead sx={{ bgcolor: tableHeadBg }}>
                       <TableRow>
                         <TableCell>Data</TableCell>
-                        <TableCell>Descricao</TableCell>
+                        <TableCell>Descrição</TableCell>
                         <TableCell>Categoria</TableCell>
                         <TableCell>Conta</TableCell>
                         <TableCell>Tipo</TableCell>
                         <TableCell>Valor</TableCell>
                         <TableCell>Status</TableCell>
-                        <TableCell align="right">Acoes</TableCell>
+                        <TableCell align="right">Ações</TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
@@ -337,15 +338,15 @@ export function FinancePage() {
                           </TableCell>
                           <TableCell sx={{ fontWeight: 800 }}>{row.amount}</TableCell>
                           <TableCell>
-                            <Chip label={row.status} color={statusColor(row.status)} size="small" />
+                            <Chip label={financeStatusLabel(row.status)} color={statusColor(row.status)} size="small" />
                           </TableCell>
                           <TableCell align="right">
-                            <Tooltip title="Conciliar lancamento">
+                            <Tooltip title="Conciliar lançamento">
                               <IconButton aria-label={`Conciliar ${row.description}`}>
                                 <TaskAlt />
                               </IconButton>
                             </Tooltip>
-                            <IconButton aria-label={`Mais acoes para ${row.description}`}>
+                            <IconButton aria-label={`Mais ações para ${row.description}`}>
                               <MoreVert />
                             </IconButton>
                           </TableCell>
@@ -354,56 +355,47 @@ export function FinancePage() {
                     </TableBody>
                   </Table>
                 </TableContainer>
-              </CardContent>
-            </Card>
-          </Stack>
-        </Grid>
+            </DashboardCard>
+        </Stack>
 
-        <Grid size={{ xs: 12, xl: 4 }}>
-          <Stack spacing={2}>
-            <Card sx={{ bgcolor: "#102017", color: "white" }}>
-              <CardContent>
-                <Typography variant="overline" sx={{ color: "rgba(255,255,255,0.7)" }} fontWeight={900}>
-                  Conciliacao
+        <Stack spacing={dashboardSectionGap} sx={{ minWidth: 0 }}>
+            <DashboardCard surface="emphasis" sx={{ color: "text.primary" }}>
+                <Typography variant="overline" color="text.secondary" fontWeight={900}>
+                  Conciliação
                 </Typography>
-                <Typography variant="h2">Fontes que precisam de decisao</Typography>
-                <Stack spacing={1.25} sx={{ mt: 2 }}>
+                <Typography variant="h2">Fontes que precisam de decisão</Typography>
+                <Stack spacing={1.25} divider={<Divider flexItem />} sx={{ mt: 2 }}>
                   {reconciliationItems.map((item) => (
-                    <Card key={item.title} sx={{ bgcolor: "rgba(255,255,255,0.08)", color: "white", boxShadow: "none" }}>
-                      <CardContent>
-                        <Stack direction="row" gap={2} sx={{ justifyContent: "space-between" }}>
-                          <Typography fontWeight={800}>{item.title}</Typography>
-                          <Chip label={item.badge} color={badgeColor(item.tone)} size="small" />
-                        </Stack>
-                        <Typography variant="body2" sx={{ mt: 1, color: "rgba(255,255,255,0.72)" }}>
-                          {item.description}
-                        </Typography>
-                      </CardContent>
-                    </Card>
+                    <Box key={item.title} sx={{ py: 0.5 }}>
+                      <Stack direction="row" gap={2} sx={{ justifyContent: "space-between", minWidth: 0 }}>
+                        <Typography noWrap fontWeight={800} sx={{ minWidth: 0 }}>{item.title}</Typography>
+                        <Chip label={item.badge} color={badgeColor(item.tone)} size="small" />
+                      </Stack>
+                      <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                        {item.description}
+                      </Typography>
+                    </Box>
                   ))}
                 </Stack>
-              </CardContent>
-            </Card>
+            </DashboardCard>
 
-            <Card>
-              <CardContent>
+            <DashboardCard>
                 <Typography variant="overline" color="text.secondary" fontWeight={900}>
                   Contas a receber
                 </Typography>
-                <Typography variant="h3">Mensalidades abertas prioritarias</Typography>
-                <Grid container spacing={1.25} sx={{ mt: 2 }}>
+                <Typography variant="h3">Mensalidades abertas prioritárias</Typography>
+                <Stack spacing={1} sx={{ mt: 1.5 }}>
                   {receivableQueue.map((item) => (
-                    <Grid key={item.student} size={{ xs: 12, sm: 6 }}>
-                      <Card variant="outlined" sx={{ boxShadow: "none", height: "100%" }}>
-                        <CardContent>
-                          <Stack direction="row" gap={2} sx={{ justifyContent: "space-between" }}>
-                            <Box>
-                              <Typography fontWeight={800}>{item.student}</Typography>
+                    <Box key={item.student}>
+                      <Box sx={{ p: 1.25, border: "1px solid", borderColor: "divider", borderRadius: 0.5 }}>
+                          <Stack direction="row" gap={2} sx={{ justifyContent: "space-between", minWidth: 0 }}>
+                            <Box sx={{ minWidth: 0 }}>
+                              <Typography noWrap fontWeight={800}>{item.student}</Typography>
                               <Typography variant="body2" color="text.secondary">
                                 {item.plan} - vence {item.dueDate}
                               </Typography>
                             </Box>
-                            <Chip label={item.status} color={statusColor(item.status)} size="small" />
+                            <Chip label={financeStatusLabel(item.status)} color={statusColor(item.status)} size="small" />
                           </Stack>
                           <Stack direction="row" sx={{ mt: 1.5, justifyContent: "space-between", alignItems: "center" }}>
                             <Typography variant="h3">{item.amount}</Typography>
@@ -411,25 +403,22 @@ export function FinancePage() {
                               Cobrar
                             </Button>
                           </Stack>
-                        </CardContent>
-                      </Card>
-                    </Grid>
+                      </Box>
+                    </Box>
                   ))}
-                </Grid>
-              </CardContent>
-            </Card>
+                </Stack>
+            </DashboardCard>
 
-            <Card>
-              <CardContent>
+            <DashboardCard>
                 <Typography variant="overline" color="text.secondary" fontWeight={900}>
                   Despesas
                 </Typography>
-                <Typography variant="h3">Composicao do custo mensal</Typography>
+                <Typography variant="h3">Composição do custo mensal</Typography>
                 <Stack spacing={1.5} sx={{ mt: 2 }}>
                   {expenseBreakdown.map((item) => (
                     <Box key={item.label}>
-                      <Stack direction="row" sx={{ justifyContent: "space-between" }}>
-                        <Typography fontWeight={800}>{item.label}</Typography>
+                      <Stack direction="row" sx={{ justifyContent: "space-between", minWidth: 0 }}>
+                        <Typography noWrap fontWeight={800} sx={{ minWidth: 0 }}>{item.label}</Typography>
                         <Typography fontWeight={800}>{item.amount}</Typography>
                       </Stack>
                       <LinearProgress
@@ -441,13 +430,11 @@ export function FinancePage() {
                   ))}
                 </Stack>
                 <Button fullWidth variant="outlined" startIcon={<AccountBalance />} sx={{ mt: 2 }}>
-                  Lancar despesa
+                  Registrar despesa
                 </Button>
-              </CardContent>
-            </Card>
+            </DashboardCard>
           </Stack>
-        </Grid>
-      </Grid>
+      </Box>
     </MaterialShell>
   );
 }

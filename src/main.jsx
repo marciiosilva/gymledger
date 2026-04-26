@@ -2,10 +2,8 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import App from "./App.tsx";
 import { DesignSystemShowcase } from "./pages/DesignSystemShowcase";
-import { FinancePage } from "./pages/FinancePage";
-import { StudentsPage } from "./pages/StudentsPage";
+import { appRoutes } from "./app/routes";
 import { ColorModeProvider, useColorMode } from "./material/ColorModeProvider";
 import "./design-system/tokens/index.css";
 import "./styles.css";
@@ -17,9 +15,9 @@ function ThemedApp() {
       <CssBaseline />
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<App />} />
-          <Route path="/alunos" element={<StudentsPage />} />
-          <Route path="/financeiro" element={<FinancePage />} />
+          {appRoutes.map((route) => (
+            <Route key={route.path} path={route.path} element={route.element} />
+          ))}
           <Route path="/ds" element={<DesignSystemShowcase />} />
         </Routes>
       </BrowserRouter>

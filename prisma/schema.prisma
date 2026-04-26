@@ -1,0 +1,305 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum UserRole {
+  ADMIN
+  PROFESSOR
+  STUDENT
+}
+
+enum OperationalStatus {
+  ACTIVE
+  INACTIVE
+}
+
+enum PlanPeriodicity {
+  MONTHLY
+  QUARTERLY
+  SEMIANNUAL
+  ANNUAL
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  OVERDUE
+  CANCELED
+}
+
+enum PaymentMethod {
+  CASH
+  CARD
+  PIX
+  BANK_TRANSFER
+  OTHER
+}
+
+enum ImportType {
+  STUDENTS
+  EXERCISES
+  WORKOUTS
+}
+
+enum ImportStatus {
+  PENDING
+  VALIDATED
+  COMPLETED
+  FAILED
+}
+
+model Gym {
+  id        String   @id @default(cuid())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  users              User[]
+  students           Student[]
+  plans              Plan[]
+  payments           Payment[]
+  exercises          Exercise[]
+  workouts           Workout[]
+  workoutAssignments WorkoutAssignment[]
+  checkIns           CheckIn[]
+  importBatches      ImportBatch[]
+}
+
+model User {
+  id             String   @id @default(cuid())
+  gymId          String
+  authProviderId String?  @unique
+  name           String
+  email          String
+  role           UserRole @default(ADMIN)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  gym      Gym       @relation(fields: [gymId], references: [id], onDelete: Cascade)
+  workouts Workout[]
+
+  @@unique([gymId, email])
+  @@index([gymId])
+}
+
+model Student {
+  id                String            @id @default(cuid())
+  gymId             String
+  planId            String?
+  name              String
+  email             String?
+  phone             String?
+  document          String?
+  birthDate         DateTime?
+  address           String?
+  emergencyContact  String?
+  goal              String?
+  level             String?
+  medicalNotes      String?
+  startDate         DateTime
+  operationalStatus OperationalStatus @default(ACTIVE)
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+
+  gym                Gym                 @relation(fields: [gymId], references: [id], onDelete: Cascade)
+  plan               Plan?               @relation(fields: [planId], references: [id], onDelete: SetNull)
+  payments           Payment[]
+  workoutAssignments WorkoutAssignment[]
+  checkIns           CheckIn[]
+
+  @@unique([gymId, email])
+  @@unique([gymId, document])
+  @@index([gymId])
+  @@index([gymId, planId])
+}
+
+model Plan {
+  id             String          @id @default(cuid())
+  gymId          String
+  name           String
+  amountInCents  Int
+  periodicity    PlanPeriodicity
+  dueDay         Int
+  isActive       Boolean         @default(true)
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+
+  gym      Gym       @relation(fields: [gymId], references: [id], onDelete: Cascade)
+  students Student[]
+  payments Payment[]
+
+  @@unique([gymId, name])
+  @@index([gymId])
+}
+
+model Payment {
+  id              String         @id @default(cuid())
+  gymId           String
+  studentId       String
+  planId          String?
+  amountInCents   Int
+  dueDate         DateTime
+  paidAt          DateTime?
+  status          PaymentStatus  @default(PENDING)
+  paymentMethod   PaymentMethod?
+  notes           String?
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  gym     Gym     @relation(fields: [gymId], references: [id], onDelete: Cascade)
+  student Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  plan    Plan?   @relation(fields: [planId], references: [id], onDelete: SetNull)
+
+  @@index([gymId])
+  @@index([gymId, status])
+  @@index([gymId, dueDate])
+  @@index([gymId, studentId])
+}
+
+model Exercise {
+  id             String            @id @default(cuid())
+  gymId          String
+  name           String
+  muscleGroup    String
+  description    String?
+  imageUrl       String?
+  videoUrl       String?
+  technicalNotes String?
+  isActive       Boolean           @default(true)
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+
+  gym              Gym              @relation(fields: [gymId], references: [id], onDelete: Cascade)
+  workoutExercises WorkoutExercise[]
+
+  @@unique([gymId, name, muscleGroup])
+  @@index([gymId])
+}
+
+model Workout {
+  id              String              @id @default(cuid())
+  gymId           String
+  createdByUserId String?
+  name            String
+  goal            String?
+  level           String?
+  weeklyFrequency Int
+  description     String?
+  isActive        Boolean             @default(true)
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+
+  gym         Gym                 @relation(fields: [gymId], references: [id], onDelete: Cascade)
+  createdBy   User?               @relation(fields: [createdByUserId], references: [id], onDelete: SetNull)
+  days        WorkoutDay[]
+  assignments WorkoutAssignment[]
+
+  @@index([gymId])
+}
+
+model WorkoutDay {
+  id        String   @id @default(cuid())
+  workoutId String
+  label     String
+  order     Int
+  notes     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  workout  Workout           @relation(fields: [workoutId], references: [id], onDelete: Cascade)
+  exercises WorkoutExercise[]
+
+  @@unique([workoutId, label])
+  @@index([workoutId])
+}
+
+model WorkoutExercise {
+  id              String   @id @default(cuid())
+  workoutDayId    String
+  exerciseId      String
+  order           Int
+  sets            String?
+  repetitions     String?
+  suggestedLoad   String?
+  rest            String?
+  notes           String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  workoutDay WorkoutDay @relation(fields: [workoutDayId], references: [id], onDelete: Cascade)
+  exercise   Exercise   @relation(fields: [exerciseId], references: [id], onDelete: Restrict)
+
+  @@index([workoutDayId])
+  @@index([exerciseId])
+}
+
+model WorkoutAssignment {
+  id         String   @id @default(cuid())
+  gymId      String
+  studentId  String
+  workoutId  String
+  assignedAt DateTime @default(now())
+  isActive   Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  gym     Gym     @relation(fields: [gymId], references: [id], onDelete: Cascade)
+  student Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  workout Workout @relation(fields: [workoutId], references: [id], onDelete: Cascade)
+
+  @@index([gymId])
+  @@index([gymId, studentId])
+  @@index([gymId, workoutId])
+}
+
+model CheckIn {
+  id        String   @id @default(cuid())
+  gymId     String
+  studentId String
+  checkedAt DateTime @default(now())
+  notes     String?
+  createdAt DateTime @default(now())
+
+  gym     Gym     @relation(fields: [gymId], references: [id], onDelete: Cascade)
+  student Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@index([gymId])
+  @@index([gymId, studentId])
+  @@index([gymId, checkedAt])
+}
+
+model ImportBatch {
+  id          String       @id @default(cuid())
+  gymId       String
+  type        ImportType
+  status      ImportStatus @default(PENDING)
+  fileName    String
+  totalRows   Int          @default(0)
+  validRows   Int          @default(0)
+  invalidRows Int          @default(0)
+  createdAt   DateTime     @default(now())
+  completedAt DateTime?
+
+  gym    Gym           @relation(fields: [gymId], references: [id], onDelete: Cascade)
+  errors ImportError[]
+
+  @@index([gymId])
+  @@index([gymId, type])
+}
+
+model ImportError {
+  id            String   @id @default(cuid())
+  importBatchId String
+  rowNumber     Int
+  fieldName     String?
+  message       String
+  createdAt     DateTime @default(now())
+
+  importBatch ImportBatch @relation(fields: [importBatchId], references: [id], onDelete: Cascade)
+
+  @@index([importBatchId])
+}

@@ -12,11 +12,9 @@ import WarningAmber from "@mui/icons-material/WarningAmber";
 import {
   Box,
   Button,
-  Card,
-  CardContent,
   Chip,
   Collapse,
-  Grid,
+  Divider,
   IconButton,
   InputAdornment,
   MenuItem,
@@ -34,6 +32,8 @@ import {
 } from "@mui/material";
 import { alpha, useTheme } from "@mui/material/styles";
 import { useMemo, useState } from "react";
+import { DashboardCard } from "../material/DashboardCard";
+import { dashboardKpiGridSx, dashboardMainSplitSx, dashboardSectionGap } from "../material/layout";
 import { kpiCardSurfaceGradient } from "../material/surfaces";
 import {
   attentionQueue,
@@ -60,21 +60,29 @@ function statusColor(status: string): "success" | "warning" | "error" | "default
   return "success";
 }
 
+function studentStatusLabel(status: string): string {
+  if (status === "active") return "Ativo";
+  if (status === "inactive") return "Inativo";
+  if (status === "late") return "Em atraso";
+  if (status === "pending") return "Pendente";
+  if (status === "paid") return "Em dia";
+  return status;
+}
+
 export function StudentsPage() {
   const [filtersOpen, setFiltersOpen] = useState(false);
   const theme = useTheme();
   const isDark = theme.palette.mode === "dark";
   const kpiCardSurface = kpiCardSurfaceGradient(theme);
   const planMixTotal = useMemo(() => planMix.reduce((sum, plan) => sum + plan.count, 0), []);
-  const filterPanelBg = alpha(theme.palette.common.black, isDark ? 0.12 : 0.02);
-
+  const filterPanelBg = alpha(theme.palette.text.primary, isDark ? 0.08 : 0.02);
+  const tableHeadBg = alpha(theme.palette.text.primary, isDark ? 0.08 : 0.04);
   return (
     <MaterialShell
       eyebrow="Alunos"
-      title="Alunos, caixa e retencao juntos."
-      description="Veja quem esta ativo, quem precisa de cobranca e quais alunos pedem acompanhamento hoje."
-      asideTitle="Foco operacional"
-      asideDescription="Base de alunos conectada ao caixa, cobranca e retencao."
+      title="Alunos, caixa e retenção no mesmo fluxo."
+      description="Veja quem está ativo, quem precisa de cobrança hoje e quais alunos pedem acompanhamento."
+      asideDescription="Base de alunos conectada ao caixa, cobrança e retenção."
       actions={
         <>
           <Button variant="outlined" startIcon={<Download />}>
@@ -86,24 +94,20 @@ export function StudentsPage() {
         </>
       }
     >
-      <Grid container spacing={2}>
+      <Box sx={dashboardKpiGridSx}>
         {studentMetrics.map((metric, index) => {
           const icon = studentMetricIcons[index] ?? <People fontSize="small" />;
           const accent = studentMetricAccent[index] ?? "primary.main";
 
           return (
-            <Grid key={metric.title} size={{ xs: 12, sm: 6, md: 3 }}>
-              <Card
-                sx={{
-                  height: "100%",
-                  border: "1px solid",
-                  borderColor: "divider",
-                  borderRadius: 0.5,
-                  background: kpiCardSurface
-                }}
+              <DashboardCard
+                key={metric.title}
+                surface="kpi"
+                fullHeight
+                sx={{ background: kpiCardSurface }}
+                contentSx={{ p: { xs: 1.5, sm: 1.75 }, "&:last-child": { pb: { xs: 1.5, sm: 1.75 } } }}
               >
-                <CardContent sx={{ p: { xs: 1.5, sm: 1.75 }, "&:last-child": { pb: { xs: 1.5, sm: 1.75 } } }}>
-                  <Stack direction="row" sx={{ alignItems: "center", justifyContent: "space-between" }}>
+                <Stack direction="row" sx={{ alignItems: "center", justifyContent: "space-between" }}>
                     <Typography variant="overline" color="text.secondary" fontWeight={900}>
                       {metric.title}
                     </Typography>
@@ -121,30 +125,26 @@ export function StudentsPage() {
                       {icon}
                     </Box>
                   </Stack>
-                  <Typography variant="h4" sx={{ mt: 0.8, lineHeight: 1.08 }}>
-                    {metric.value}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary" sx={{ mt: 0.75 }}>
-                    {metric.delta}
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Grid>
+                <Typography variant="h4" sx={{ mt: 0.8, lineHeight: 1.08 }}>
+                  {metric.value}
+                </Typography>
+                <Typography variant="body2" color="text.secondary" sx={{ mt: 0.75 }}>
+                  {metric.delta}
+                </Typography>
+              </DashboardCard>
           );
         })}
-      </Grid>
+      </Box>
 
-      <Grid container spacing={2}>
-        <Grid size={{ xs: 12, xl: 8 }}>
-          <Card sx={{ borderRadius: 0.5 }}>
-            <CardContent>
+      <Box sx={dashboardMainSplitSx}>
+        <DashboardCard sx={{ minWidth: 0 }}>
               <Stack direction={{ xs: "column", lg: "row" }} gap={2} sx={{ justifyContent: "space-between" }}>
                 <Box>
                   <Typography variant="overline" color="text.secondary" fontWeight={900}>
                     Cadastro e acompanhamento
                   </Typography>
                   <Typography variant="h2">
-                    Alunos priorizados por status financeiro e frequencia
+                    Alunos priorizados por status financeiro e frequência
                   </Typography>
                 </Box>
               </Stack>
@@ -206,8 +206,8 @@ export function StudentsPage() {
                     ))}
                   </Box>
 
-                  <Grid container spacing={1.25} sx={{ mt: 1.25 }}>
-                    <Grid size={{ xs: 12, lg: 5 }}>
+                  <Box sx={{ mt: 1.25, display: "grid", gridTemplateColumns: { xs: "1fr", lg: "2fr repeat(3, minmax(0, 1fr))" }, gap: 1 }}>
+                    <Box>
                       <TextField
                         fullWidth
                         size="small"
@@ -221,24 +221,24 @@ export function StudentsPage() {
                           ) }
                         }}
                       />
-                    </Grid>
-                    <Grid size={{ xs: 12, sm: 6, lg: 2.5 }}>
+                    </Box>
+                    <Box>
                       <TextField fullWidth size="small" select label="Plano" defaultValue="todos">
                         <MenuItem value="todos">Todos os planos</MenuItem>
                         <MenuItem value="studio">Studio Mensal</MenuItem>
                         <MenuItem value="funcional">Funcional</MenuItem>
                         <MenuItem value="cross">Cross Premium</MenuItem>
                       </TextField>
-                    </Grid>
-                    <Grid size={{ xs: 12, sm: 6, lg: 2.5 }}>
+                    </Box>
+                    <Box>
                       <TextField fullWidth size="small" select label="Status" defaultValue="todos">
                         <MenuItem value="todos">Todos os status</MenuItem>
                         <MenuItem value="active">Ativos</MenuItem>
                         <MenuItem value="pending">Pendentes</MenuItem>
                         <MenuItem value="late">Atrasados</MenuItem>
                       </TextField>
-                    </Grid>
-                    <Grid size={{ xs: 12, lg: 2 }}>
+                    </Box>
+                    <Box>
                       <Button
                         fullWidth
                         variant="contained"
@@ -247,14 +247,14 @@ export function StudentsPage() {
                       >
                         Aplicar filtros
                       </Button>
-                    </Grid>
-                  </Grid>
+                    </Box>
+                  </Box>
                 </Box>
               </Collapse>
 
-              <TableContainer sx={{ mt: 2 }}>
-                <Table size="small">
-                  <TableHead>
+              <TableContainer sx={{ mt: 2, border: "1px solid", borderColor: "divider", borderRadius: 0.5, overflowX: "auto" }}>
+                <Table size="small" sx={{ minWidth: 980 }}>
+                  <TableHead sx={{ bgcolor: tableHeadBg }}>
                     <TableRow>
                       <TableCell>Aluno</TableCell>
                       <TableCell>Plano</TableCell>
@@ -262,8 +262,8 @@ export function StudentsPage() {
                       <TableCell>Financeiro</TableCell>
                       <TableCell>Vencimento</TableCell>
                       <TableCell>Valor</TableCell>
-                      <TableCell>Ultimo check-in</TableCell>
-                      <TableCell align="right">Acoes</TableCell>
+                      <TableCell>Último check-in</TableCell>
+                      <TableCell align="right">Ações</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
@@ -295,11 +295,11 @@ export function StudentsPage() {
                         </TableCell>
                         <TableCell>{student.plan}</TableCell>
                         <TableCell>
-                          <Chip label={student.status} color={statusColor(student.status)} size="small" />
+                          <Chip label={studentStatusLabel(student.status)} color={statusColor(student.status)} size="small" />
                         </TableCell>
                         <TableCell>
                           <Chip
-                            label={student.financialStatus}
+                            label={studentStatusLabel(student.financialStatus)}
                             color={statusColor(student.financialStatus)}
                             size="small"
                           />
@@ -308,12 +308,12 @@ export function StudentsPage() {
                         <TableCell sx={{ fontWeight: 800 }}>{student.amount}</TableCell>
                         <TableCell>{student.lastCheckIn}</TableCell>
                         <TableCell align="right">
-                          <Tooltip title="Enviar cobranca ou lembrete">
+                          <Tooltip title="Enviar cobrança ou lembrete">
                             <IconButton aria-label={`Enviar mensagem para ${student.name}`}>
                               <Send />
                             </IconButton>
                           </Tooltip>
-                          <IconButton aria-label={`Mais acoes para ${student.name}`}>
+                          <IconButton aria-label={`Mais ações para ${student.name}`}>
                             <MoreVert />
                           </IconButton>
                         </TableCell>
@@ -322,42 +322,31 @@ export function StudentsPage() {
                   </TableBody>
                 </Table>
               </TableContainer>
-            </CardContent>
-          </Card>
-        </Grid>
+        </DashboardCard>
 
-        <Grid size={{ xs: 12, xl: 4 }}>
-          <Stack spacing={2}>
-            <Card sx={{ bgcolor: "#102017", color: "white", borderRadius: 0.5 }}>
-              <CardContent>
-                <Typography variant="overline" sx={{ color: "rgba(255,255,255,0.7)" }} fontWeight={900}>
-                  Fila de atencao
+        <Stack spacing={dashboardSectionGap} sx={{ minWidth: 0 }}>
+            <DashboardCard surface="emphasis" sx={{ color: "text.primary" }}>
+                <Typography variant="overline" color="text.secondary" fontWeight={900}>
+                  Fila de atenção
                 </Typography>
-                <Typography variant="h2">Proximas acoes sugeridas</Typography>
-                <Stack spacing={1.25} sx={{ mt: 2 }}>
+                <Typography variant="h2">Próximas ações sugeridas</Typography>
+                <Stack spacing={1.25} divider={<Divider flexItem />} sx={{ mt: 2 }}>
                   {attentionQueue.map((item) => (
-                    <Card
-                      key={item.title}
-                      sx={{ bgcolor: "rgba(255,255,255,0.08)", color: "white", boxShadow: "none", borderRadius: 0.5 }}
-                    >
-                      <CardContent>
-                        <Stack direction="row" gap={2} sx={{ justifyContent: "space-between" }}>
-                          <Typography fontWeight={800}>{item.title}</Typography>
-                          <Chip label={item.badge} color="success" size="small" />
-                        </Stack>
-                        <Typography variant="body2" sx={{ mt: 1, color: "rgba(255,255,255,0.72)" }}>
-                          {item.description}
-                        </Typography>
-                      </CardContent>
-                    </Card>
+                    <Box key={item.title} sx={{ py: 0.5 }}>
+                      <Stack direction="row" gap={2} sx={{ justifyContent: "space-between", minWidth: 0 }}>
+                        <Typography noWrap fontWeight={800} sx={{ minWidth: 0 }}>{item.title}</Typography>
+                        <Chip label={item.badge} color="success" size="small" />
+                      </Stack>
+                      <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                        {item.description}
+                      </Typography>
+                    </Box>
                   ))}
                 </Stack>
-              </CardContent>
-            </Card>
+            </DashboardCard>
 
-            <Card sx={{ borderRadius: 0.5 }}>
-              <CardContent sx={{ p: { xs: 2, sm: 2.25 } }}>
-                <Stack direction="row" sx={{ alignItems: "flex-start", justifyContent: "space-between" }} gap={1.5}>
+            <DashboardCard contentSx={{ p: { xs: 2, sm: 2.25 }, "&:last-child": { pb: { xs: 2, sm: 2.25 } } }}>
+                <Stack direction="row" sx={{ alignItems: "flex-start", justifyContent: "space-between", minWidth: 0 }} gap={1.5}>
                   <Box sx={{ minWidth: 0 }}>
                     <Typography variant="overline" color="text.secondary" fontWeight={900}>
                       Mix de planos
@@ -405,7 +394,7 @@ export function StudentsPage() {
                             gap={1.5}
                             sx={{ alignItems: "center", flexWrap: "wrap", minWidth: 0, rowGap: 0.5, columnGap: 1.5 }}
                           >
-                            <Typography fontWeight={800} sx={{ minWidth: 0, pr: 0.25 }}>
+                            <Typography noWrap fontWeight={800} sx={{ minWidth: 0, pr: 0.25 }}>
                               {plan.plan}
                             </Typography>
                             <Chip
@@ -468,11 +457,9 @@ export function StudentsPage() {
                     );
                   })}
                 </Stack>
-              </CardContent>
-            </Card>
+            </DashboardCard>
           </Stack>
-        </Grid>
-      </Grid>
+      </Box>
     </MaterialShell>
   );
 }
