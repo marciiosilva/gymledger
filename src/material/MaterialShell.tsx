@@ -1,7 +1,9 @@
 import { Link as RouterLink, useLocation } from "react-router-dom";
 import AccountBalanceWallet from "@mui/icons-material/AccountBalanceWallet";
 import BarChart from "@mui/icons-material/BarChart";
+import DarkMode from "@mui/icons-material/DarkMode";
 import ExpandMore from "@mui/icons-material/ExpandMore";
+import LightMode from "@mui/icons-material/LightMode";
 import Dashboard from "@mui/icons-material/Dashboard";
 import Layers from "@mui/icons-material/Layers";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -20,10 +22,12 @@ import {
   ListItemText,
   Paper,
   Stack,
+  Tooltip,
   Typography
 } from "@mui/material";
 import { Children, Fragment, cloneElement, isValidElement, useMemo, useState } from "react";
 import type { ReactElement, ReactNode } from "react";
+import { useColorMode } from "./ColorModeProvider";
 
 const drawerWidth = 280;
 type ActionElement = ReactElement<{
@@ -45,7 +49,10 @@ const navItems = [
 function flattenActionItems(node: ReactNode): ActionElement[] {
   return Children.toArray(node).flatMap((child) => {
     if (!isValidElement(child)) return [];
-    if (child.type === Fragment) return flattenActionItems(child.props.children);
+    if (child.type === Fragment) {
+      const props = child.props as { children?: ReactNode };
+      return flattenActionItems(props.children);
+    }
     return [child as ActionElement];
   });
 }
@@ -69,11 +76,13 @@ export function MaterialShell({
   actions,
   children
 }: MaterialShellProps) {
+  const { mode, toggleMode } = useColorMode();
   const location = useLocation();
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [quickActionsOpen, setQuickActionsOpen] = useState(false);
   const actionItems = useMemo(() => flattenActionItems(actions), [actions]);
   const pageLabel = title.replace(/\.$/, "");
+  const isDark = mode === "dark";
 
   const drawer = (
     <Box
@@ -112,7 +121,7 @@ export function MaterialShell({
           sx={{ width: 44, height: 44, bgcolor: "rgba(255,255,255,0.12)" }}
         />
         <Box sx={{ minWidth: 0 }}>
-          <Typography variant="subtitle1" fontWeight={900} noWrap>
+          <Typography variant="subtitle1" noWrap sx={{ fontWeight: 900 }}>
             GymLedger
           </Typography>
           <Typography variant="caption" sx={{ color: "rgba(255,255,255,0.68)" }} noWrap>
@@ -237,7 +246,11 @@ export function MaterialShell({
               </ListItemIcon>
               <ListItemText
                 primary={item.label}
-                slotProps={{ primary: { fontWeight: 800, fontSize: 14 } }}
+                slotProps={{
+                  primary: {
+                    sx: { fontWeight: 800, fontSize: 14 }
+                  }
+                }}
               />
               {item.badge ? (
                 <Chip
@@ -314,7 +327,7 @@ export function MaterialShell({
           minHeight: "100vh"
         }}
       >
-        <Stack spacing={3} sx={{ maxWidth: 1440, mx: "auto", px: { xs: 2, sm: 3, lg: 4 }, pt: { xs: 1.5, lg: 2.25 }, pb: { xs: 2.5, lg: 4 } }}>
+        <Stack spacing={{ xs: 3.25, sm: 3 }} sx={{ maxWidth: 1440, mx: "auto", px: { xs: 2.25, sm: 3, lg: 4 }, pt: { xs: 1.75, lg: 2.25 }, pb: { xs: 3, lg: 4 } }}>
           <Stack
             direction="row"
             spacing={1.5}
@@ -323,42 +336,77 @@ export function MaterialShell({
             <IconButton aria-label="Abrir menu lateral" onClick={() => setMobileNavOpen(true)}>
               <MenuIcon />
             </IconButton>
-            <Typography variant="subtitle1" component="div" fontWeight={900} noWrap>
+            <Typography variant="subtitle1" component="div" noWrap sx={{ fontWeight: 900 }}>
               {pageLabel}
             </Typography>
+            <Box sx={{ ml: "auto" }}>
+              <Tooltip title={isDark ? "Mudar para tema claro" : "Mudar para tema escuro"}>
+                <IconButton
+                  aria-label={isDark ? "Ativar tema claro" : "Ativar tema escuro"}
+                  onClick={toggleMode}
+                  size="small"
+                >
+                  {isDark ? <LightMode fontSize="small" /> : <DarkMode fontSize="small" />}
+                </IconButton>
+              </Tooltip>
+            </Box>
           </Stack>
 
           <Box
             component="section"
             sx={{
               display: "flex",
-              flexDirection: { xs: "column", md: "row" },
-              gap: { xs: 1, md: 2 },
-              alignItems: { xs: "flex-start", md: "center" },
-              justifyContent: "space-between",
-              borderBottom: "1px solid rgba(31,31,31,0.08)",
-              pb: { xs: 2, lg: 3 }
+              flexDirection: "column",
+              gap: 1.25,
+              borderBottom: "1px solid",
+              borderColor: "divider",
+              pb: { xs: 2.5, lg: 3 }
             }}
           >
-            <Box sx={{ minWidth: 0 }}>
-              <Typography variant="overline" color="primary.dark" fontWeight={900}>
-                {eyebrow}
+            <Stack direction="row" spacing={1.5} sx={{ alignItems: "flex-start", justifyContent: "space-between" }}>
+              <Box sx={{ minWidth: 0, flex: 1 }}>
+                <Typography
+                  variant="overline"
+                  color="primary.dark"
+                  sx={{
+                    fontFamily: "Inter, system-ui, sans-serif",
+                    fontWeight: 800,
+                    fontSize: "0.7rem",
+                    letterSpacing: "0.1em",
+                    lineHeight: 1.2
+                  }}
+                >
+                  {eyebrow}
+                </Typography>
+                {title.trim() ? (
+                  <Typography
+                    variant="h1"
+                    sx={{
+                      mt: 0.5,
+                      maxWidth: 720,
+                      fontSize: { xs: "1.8rem", md: "2.35rem", xl: "2.75rem" },
+                      lineHeight: 1.08
+                    }}
+                  >
+                    {title}
+                  </Typography>
+                ) : null}
+              </Box>
+              <Tooltip title={isDark ? "Mudar para tema claro" : "Mudar para tema escuro"}>
+                <IconButton
+                  aria-label={isDark ? "Ativar tema claro" : "Ativar tema escuro"}
+                  onClick={toggleMode}
+                  sx={{ display: { xs: "none", lg: "inline-flex" } }}
+                >
+                  {isDark ? <LightMode /> : <DarkMode />}
+                </IconButton>
+              </Tooltip>
+            </Stack>
+            {description.trim() ? (
+              <Typography variant="body2" color="text.secondary" sx={{ maxWidth: 720, lineHeight: 1.6 }}>
+                {description}
               </Typography>
-              <Typography
-                variant="h1"
-                sx={{
-                  mt: 0.5,
-                  maxWidth: 720,
-                  fontSize: { xs: "1.8rem", md: "2.35rem", xl: "2.75rem" },
-                  lineHeight: 1.08
-                }}
-              >
-                {title}
-              </Typography>
-            </Box>
-            <Typography variant="body2" color="text.secondary" sx={{ maxWidth: 520, lineHeight: 1.6 }}>
-              {description}
-            </Typography>
+            ) : null}
           </Box>
 
           {children}

@@ -6,13 +6,14 @@ import App from "./App.tsx";
 import { DesignSystemShowcase } from "./pages/DesignSystemShowcase";
 import { FinancePage } from "./pages/FinancePage";
 import { StudentsPage } from "./pages/StudentsPage";
-import { gymLedgerTheme } from "./material/theme";
+import { ColorModeProvider, useColorMode } from "./material/ColorModeProvider";
 import "./design-system/tokens/index.css";
 import "./styles.css";
 
-ReactDOM.createRoot(document.getElementById("root")).render(
-  <React.StrictMode>
-    <ThemeProvider theme={gymLedgerTheme}>
+function ThemedApp() {
+  const { theme } = useColorMode();
+  return (
+    <ThemeProvider theme={theme}>
       <CssBaseline />
       <BrowserRouter>
         <Routes>
@@ -23,5 +24,13 @@ ReactDOM.createRoot(document.getElementById("root")).render(
         </Routes>
       </BrowserRouter>
     </ThemeProvider>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(
+  <React.StrictMode>
+    <ColorModeProvider>
+      <ThemedApp />
+    </ColorModeProvider>
   </React.StrictMode>
 );

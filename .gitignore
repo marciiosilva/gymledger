@@ -3,3 +3,6 @@ dist/
 coverage/
 .DS_Store
 Thumbs.db
+
+# Local Claude / Cursor worktree checkouts
+.claude/worktrees/
