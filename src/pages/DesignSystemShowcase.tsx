@@ -22,7 +22,7 @@ import { paymentRows, topMetrics } from "../data/homepageMock";
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section className="flex flex-col gap-6">
-      <h2 className="font-display font-[700] text-[--text-xl] text-[--color-text-primary] tracking-tight border-b border-[--color-border] pb-3 m-0">
+      <h2 className="font-body font-[700] text-[--text-xl] text-[--color-text-primary] border-b border-[--color-border] pb-3 m-0">
         {title}
       </h2>
       {children}
@@ -33,7 +33,7 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 function Row({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="flex flex-col gap-2">
-      <p className="font-body text-[--text-xs] font-[800] uppercase tracking-[0.08em] text-[--color-text-muted] m-0">
+      <p className="font-body text-[--text-xs] font-[800] uppercase text-[--color-text-muted] m-0">
         {label}
       </p>
       <div className="flex flex-wrap items-center gap-3">{children}</div>
@@ -52,7 +52,7 @@ export function DesignSystemShowcase() {
     { label: "Treinos" },
     { label: "Professores" },
     { label: "IA" },
-    { label: "Relatorios" },
+    { label: "Relatórios" },
   ];
 
   const selectOptions = [
@@ -67,10 +67,10 @@ export function DesignSystemShowcase() {
         {/* header */}
         <div className="flex items-start justify-between gap-6">
           <div>
-            <p className="font-body text-[--text-xs] font-[800] uppercase tracking-[0.08em] text-[--color-accent] m-0 mb-2">
+            <p className="font-body text-[--text-xs] font-[800] uppercase text-[--color-accent] m-0 mb-2">
               Ledger DS — Design System
             </p>
-            <h1 className="font-display font-[700] text-[--text-3xl] text-[--color-text-primary] tracking-tight m-0 leading-tight">
+            <h1 className="font-body font-[700] text-[--text-3xl] text-[--color-text-primary] m-0 leading-tight">
               Componentes & Tokens
             </h1>
           </div>
@@ -314,7 +314,7 @@ export function DesignSystemShowcase() {
 
         {/* ── SidebarNav ── */}
         <Section title="SidebarNav — Pattern">
-          <div className="w-64 bg-gradient-to-b from-[--navy-800] to-[--navy-900] rounded-[--radius-xl] p-4">
+          <div className="w-64 bg-[--color-surface] border border-[--color-border] rounded-[--radius-md] p-4">
             <SidebarNav items={navItems} />
           </div>
         </Section>

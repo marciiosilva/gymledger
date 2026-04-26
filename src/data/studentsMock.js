@@ -21,7 +21,7 @@ export const studentMetrics = [
     trend: "up"
   },
   {
-    title: "Churn previsto",
+    title: "Cancelamento previsto",
     value: "3,2%",
     delta: "queda de 0,8 p.p.",
     tone: "slate",
@@ -119,7 +119,7 @@ export const attentionQueue = [
   },
   {
     title: "Sem check-in há 14 dias",
-    description: "4 alunos ativos reduziram frequência e merecem acompanhamento antes do churn.",
+    description: "4 alunos ativos reduziram frequência e merecem acompanhamento antes do cancelamento.",
     badge: "retenção"
   }
 ];

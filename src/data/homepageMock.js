@@ -1,9 +1,9 @@
 export const navItems = [
-  { label: "Dashboard", href: "/", active: true },
+  { label: "Início", href: "/", active: true },
   { label: "Alunos", href: "/alunos", badge: 148 },
   { label: "Financeiro", href: "/financeiro", badge: 23 },
   { label: "Planos" },
-  { label: "Relatorios" }
+  { label: "Relatórios" }
 ];
 
 export const topMetrics = [
@@ -15,9 +15,9 @@ export const topMetrics = [
     trend: "up"
   },
   {
-    title: "Recebido no mes",
+    title: "Recebido no mês",
     value: "R$ 15.410",
-    delta: "82% do previsto ja conciliado",
+    delta: "82% do previsto já conciliado",
     tone: "blue",
     trend: "up"
   },
@@ -29,16 +29,16 @@ export const topMetrics = [
     trend: "up"
   },
   {
-    title: "Inadimplencia",
+    title: "Inadimplência",
     value: "R$ 1.240",
-    delta: "7 alunos vencidos ha mais de 5 dias",
+    delta: "7 alunos vencidos há mais de 5 dias",
     tone: "amber",
     trend: "down"
   },
   {
     title: "Saldo de caixa",
     value: "R$ 9.860",
-    delta: "Entradas - saidas do mes",
+    delta: "Entradas - saídas do mês",
     tone: "blue",
     trend: "up"
   }
@@ -48,7 +48,7 @@ export const quickActions = [
   "Importar extrato",
   "Cadastrar aluno",
   "Criar plano",
-  "Abrir regua de cobranca"
+  "Abrir régua de cobrança"
 ];
 
 export const weeklyCashflow = [
@@ -80,7 +80,7 @@ export const cadenceItems = [
   },
   {
     window: "D+7",
-    title: "Risco real de churn por atraso",
+    title: "Risco de cancelamento por atraso",
     count: 3,
     action: "Ver casos"
   }
@@ -88,16 +88,16 @@ export const cadenceItems = [
 
 export const moduleCards = [
   {
-    title: "Importacao e conciliacao",
-    stat: "70% auto-match",
+    title: "Importação e conciliação",
+    stat: "70% conciliado",
     description:
-      "Upload de CSV ou OFX para bater extrato com mensalidades por valor, nome e data."
+      "Upload de CSV ou OFX para conciliar extrato com mensalidades por valor, nome e data."
   },
   {
     title: "Mensalidades",
     stat: "19 em aberto",
     description:
-      "Serie automatica por plano, baixa manual simples e status financeiro por aluno."
+      "Série automática por plano, baixa manual simples e status financeiro por aluno."
   },
   {
     title: "Fluxo de caixa",
@@ -106,10 +106,10 @@ export const moduleCards = [
       "Entradas e saidas reais por categoria, sem depender de gateway para gerar previsibilidade."
   },
   {
-    title: "Regua de cobranca",
-    stat: "20 acoes hoje",
+    title: "Régua de cobrança",
+    stat: "20 ações hoje",
     description:
-      "Lista pronta para cobrar por WhatsApp com templates editaveis e historico de contato."
+      "Lista pronta para cobrar por WhatsApp com modelos editáveis e histórico de contato."
   }
 ];
 
@@ -173,13 +173,13 @@ export const paymentRows = recentPayments;
 export const reconciliationQueue = [
   {
     title: "Extrato Nubank importado",
-    description: "14 lancamentos encontrados, 10 conciliados automaticamente.",
+    description: "14 lançamentos encontrados, 10 conciliados automaticamente.",
     badge: "4 pendentes"
   },
   {
     title: "PIX sem nome do aluno",
-    description: "3 entradas aguardam vinculacao manual a mensalidades em aberto.",
-    badge: "acao manual"
+    description: "3 entradas aguardam vínculo manual com mensalidades em aberto.",
+    badge: "ação manual"
   }
 ];
 
@@ -187,7 +187,7 @@ export const dueSoon = [
   {
     student: "Julia Menezes",
     plan: "Mensal Studio",
-    dueIn: "vence amanha"
+    dueIn: "vence amanhã"
   },
   {
     student: "Andre Castro",

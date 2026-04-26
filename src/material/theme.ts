@@ -44,10 +44,10 @@ export function getGymLedgerThemeOptions(mode: PaletteMode): ThemeOptions {
           }
     },
     shape: {
-      borderRadius: 18
+      borderRadius: 12
     },
     typography: {
-      fontFamily: "'Roboto', 'Arial', sans-serif",
+      fontFamily: "var(--font-body), 'Segoe UI', sans-serif",
       h1: {
         fontSize: "clamp(2.25rem, 4vw, 4rem)",
         lineHeight: 1,
@@ -66,37 +66,98 @@ export function getGymLedgerThemeOptions(mode: PaletteMode): ThemeOptions {
         fontWeight: 700,
         letterSpacing: 0
       },
+      overline: {
+        letterSpacing: 0,
+        lineHeight: 1.2,
+        fontWeight: 800
+      },
       button: {
         textTransform: "none",
         fontWeight: 700
       }
     },
     components: {
+      MuiTypography: {
+        styleOverrides: {
+          root: ({ ownerState }) =>
+            ownerState.variant === "overline"
+              ? {
+                  minWidth: 0,
+                  maxWidth: "100%",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  whiteSpace: "nowrap"
+                }
+              : {
+                  minWidth: 0
+                }
+        }
+      },
       MuiButton: {
         defaultProps: {
           disableElevation: true
         },
         styleOverrides: {
           root: {
-            borderRadius: 999
+            maxWidth: "100%",
+            minWidth: 0,
+            borderRadius: 6,
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap"
+          },
+          startIcon: {
+            flexShrink: 0
+          },
+          endIcon: {
+            flexShrink: 0
           }
         }
       },
       MuiCard: {
         styleOverrides: {
           root: ({ theme }) => ({
+            minWidth: 0,
+            borderRadius: 6,
             border: `1px solid ${theme.palette.mode === "dark" ? "rgba(255,255,255,0.10)" : "rgba(31,31,31,0.08)"}`,
-            boxShadow:
-              theme.palette.mode === "dark"
-                ? "0 1px 2px rgba(0,0,0,0.40), 0 10px 30px rgba(0,0,0,0.28)"
-                : "0 1px 2px rgba(31,31,31,0.08), 0 8px 24px rgba(31,31,31,0.06)"
+            boxShadow: "none"
           })
         }
       },
       MuiChip: {
         styleOverrides: {
           root: {
+            maxWidth: "100%",
+            minWidth: 0,
+            borderRadius: 6,
             fontWeight: 700
+          },
+          label: {
+            minWidth: 0,
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap"
+          }
+        }
+      },
+      MuiCardContent: {
+        styleOverrides: {
+          root: {
+            minWidth: 0,
+            padding: 16,
+            "&:last-child": {
+              paddingBottom: 16
+            }
+          }
+        }
+      },
+      MuiTableCell: {
+        styleOverrides: {
+          root: {
+            whiteSpace: "nowrap"
+          },
+          head: {
+            fontWeight: 800
           }
         }
       }

@@ -1,15 +1,9 @@
 import { Link as RouterLink, useLocation } from "react-router-dom";
-import AccountBalanceWallet from "@mui/icons-material/AccountBalanceWallet";
-import BarChart from "@mui/icons-material/BarChart";
 import DarkMode from "@mui/icons-material/DarkMode";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import LightMode from "@mui/icons-material/LightMode";
-import Dashboard from "@mui/icons-material/Dashboard";
-import Layers from "@mui/icons-material/Layers";
 import MenuIcon from "@mui/icons-material/Menu";
-import People from "@mui/icons-material/People";
 import {
-  Avatar,
   Box,
   Chip,
   Collapse,
@@ -25,8 +19,11 @@ import {
   Tooltip,
   Typography
 } from "@mui/material";
+import { alpha, useTheme } from "@mui/material/styles";
 import { Children, Fragment, cloneElement, isValidElement, useMemo, useState } from "react";
 import type { ReactElement, ReactNode } from "react";
+import { mainNavItems } from "../app/routes";
+import { dashboardSectionGap } from "./layout";
 import { useColorMode } from "./ColorModeProvider";
 
 const drawerWidth = 280;
@@ -38,13 +35,13 @@ type ActionElement = ReactElement<{
   variant?: "text" | "outlined" | "contained";
 }>;
 
-const navItems = [
-  { label: "Dashboard", href: "/", icon: <Dashboard /> },
-  { label: "Alunos", href: "/alunos", icon: <People />, badge: 148 },
-  { label: "Financeiro", href: "/financeiro", icon: <AccountBalanceWallet />, badge: 23 },
-  { label: "Planos", href: "#", icon: <Layers /> },
-  { label: "Relatorios", href: "#", icon: <BarChart /> }
-];
+export function isMainNavItemActive(pathname: string, itemPath: string) {
+  if (itemPath === "/") {
+    return pathname === "/";
+  }
+
+  return pathname === itemPath || pathname.startsWith(`${itemPath}/`);
+}
 
 function flattenActionItems(node: ReactNode): ActionElement[] {
   return Children.toArray(node).flatMap((child) => {
@@ -61,7 +58,6 @@ interface MaterialShellProps {
   eyebrow: string;
   title: string;
   description: string;
-  asideTitle: string;
   asideDescription: string;
   actions?: ReactNode;
   children: ReactNode;
@@ -71,32 +67,40 @@ export function MaterialShell({
   eyebrow,
   title,
   description,
-  asideTitle,
   asideDescription,
   actions,
   children
 }: MaterialShellProps) {
+  const theme = useTheme();
   const { mode, toggleMode } = useColorMode();
   const location = useLocation();
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [quickActionsOpen, setQuickActionsOpen] = useState(false);
   const actionItems = useMemo(() => flattenActionItems(actions), [actions]);
-  const pageLabel = title.replace(/\.$/, "");
+  const pageLabel = (title.trim() || eyebrow.trim() || "GymLedger").replace(/\.$/, "");
   const isDark = mode === "dark";
+  const sidebarBorder = alpha(theme.palette.text.primary, isDark ? 0.12 : 0.08);
+  const sidebarMutedText = alpha(theme.palette.text.primary, isDark ? 0.68 : 0.62);
+  const sidebarHover = alpha(theme.palette.primary.main, isDark ? 0.16 : 0.08);
+  const sidebarSelected = alpha(theme.palette.primary.main, isDark ? 0.22 : 0.12);
+  const sidebarPanelBg = isDark
+    ? alpha(theme.palette.background.paper, 0.82)
+    : alpha(theme.palette.background.paper, 0.96);
 
   const drawer = (
     <Box
       sx={{
         height: "100%",
         overflowY: "auto",
-        color: "white",
-        background:
-          "linear-gradient(180deg, #0f1f17 0%, #123720 52%, #17472a 100%)",
+        color: "text.primary",
+        bgcolor: "background.paper",
+        borderRight: "1px solid",
+        borderColor: "divider",
         p: 2.25,
         display: "flex",
         flexDirection: "column",
         scrollbarWidth: "thin",
-        scrollbarColor: "rgba(255,255,255,0.26) transparent",
+        scrollbarColor: `${alpha(theme.palette.text.primary, 0.28)} transparent`,
         "&::-webkit-scrollbar": {
           width: 8
         },
@@ -104,50 +108,77 @@ export function MaterialShell({
           background: "transparent"
         },
         "&::-webkit-scrollbar-thumb": {
-          backgroundColor: "rgba(255,255,255,0.20)",
+          backgroundColor: alpha(theme.palette.text.primary, 0.18),
           borderRadius: 8,
           border: "2px solid transparent",
           backgroundClip: "content-box"
         },
         "&::-webkit-scrollbar-thumb:hover": {
-          backgroundColor: "rgba(255,255,255,0.34)"
+          backgroundColor: alpha(theme.palette.text.primary, 0.32)
         }
       }}
     >
-      <Stack direction="row" spacing={1.25} sx={{ alignItems: "center" }}>
-        <Avatar
-          src="/branding/gymledger-logo.svg"
-          alt="Logo GymLedger"
-          sx={{ width: 44, height: 44, bgcolor: "rgba(255,255,255,0.12)" }}
+      <Box
+        sx={{
+          position: "sticky",
+          top: 0,
+          zIndex: 2,
+          height: 88,
+          flexShrink: 0,
+          border: "1px solid",
+          borderColor: "divider",
+          borderRadius: 0.5,
+          bgcolor: "#f5faf6",
+          overflow: "hidden",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          p: 1
+        }}
+      >
+        <Box
+          component="img"
+          src="/branding/logo-menu-cropped.png"
+          alt="GymLedger"
+          sx={{
+            width: "100%",
+            height: "100%",
+            objectFit: "contain",
+            objectPosition: "center"
+          }}
         />
-        <Box sx={{ minWidth: 0 }}>
-          <Typography variant="subtitle1" noWrap sx={{ fontWeight: 900 }}>
-            GymLedger
-          </Typography>
-          <Typography variant="caption" sx={{ color: "rgba(255,255,255,0.68)" }} noWrap>
-            Studio Nova Era
-          </Typography>
-        </Box>
-      </Stack>
+      </Box>
 
       <Paper
         elevation={0}
         sx={{
           mt: 2.5,
-          p: 1.5,
-          bgcolor: "rgba(255,255,255,0.10)",
-          color: "white",
-          border: "1px solid rgba(255,255,255,0.14)",
-          borderRadius: 2
+          p: 1.25,
+          bgcolor: sidebarPanelBg,
+          color: "text.primary",
+          border: "1px solid",
+          borderColor: "divider",
+          borderRadius: 0.5,
+          boxShadow: "none"
         }}
       >
-        <Typography variant="overline" sx={{ color: "rgba(255,255,255,0.64)" }}>
+        <Typography variant="overline" sx={{ color: "text.secondary" }}>
           Agora
         </Typography>
-        <Typography variant="h3" sx={{ mt: 0.5, color: "white" }}>
-          23 pendencias
+        <Typography variant="h3" noWrap sx={{ mt: 0.5, color: "text.primary" }}>
+          23 pendências
         </Typography>
-        <Typography variant="body2" sx={{ mt: 0.75, color: "rgba(255,255,255,0.72)" }}>
+        <Typography
+          variant="body2"
+          sx={{
+            mt: 0.75,
+            color: "text.secondary",
+            display: "-webkit-box",
+            overflow: "hidden",
+            WebkitBoxOrient: "vertical",
+            WebkitLineClamp: 2
+          }}
+        >
           {asideDescription}
         </Typography>
       </Paper>
@@ -161,22 +192,22 @@ export function MaterialShell({
             sx={{
               minHeight: 40,
               px: 1,
-              borderRadius: 1.5,
-              color: "rgba(255,255,255,0.78)",
+              borderRadius: 0.5,
+              color: "text.secondary",
               "&:hover": {
-                bgcolor: "rgba(255,255,255,0.10)"
+                bgcolor: "action.hover"
               }
             }}
           >
             <ListItemText
-              primary="Acoes rapidas"
+              primary="Ações rápidas"
               slotProps={{
                 primary: {
                   sx: {
                     fontWeight: 900,
                     fontSize: 12,
                     textTransform: "uppercase",
-                    letterSpacing: 0.4
+                    minWidth: 0
                   }
                 }
               }}
@@ -192,17 +223,17 @@ export function MaterialShell({
           <Collapse in={quickActionsOpen} timeout="auto" unmountOnExit>
             <Stack id="quick-actions-panel" spacing={1} sx={{ mt: 1 }}>
               {actionItems.map((action, index) => (
-                <Box key={action.key ?? index} sx={{ "& .MuiButton-root": { width: "100%", justifyContent: "flex-start", borderRadius: 1.5 } }}>
+                <Box key={action.key ?? index} sx={{ "& .MuiButton-root": { width: "100%", justifyContent: "flex-start", borderRadius: 0.5 } }}>
                   {cloneElement(action, {
                     size: "small",
-                    color: action.props.variant === "contained" ? "primary" : "inherit",
+                    color: action.props.variant === "contained" ? "primary" : "primary",
                     sx: {
-                      color: action.props.variant === "contained" ? undefined : "white",
-                      borderColor: action.props.variant === "contained" ? undefined : "rgba(255,255,255,0.24)",
-                      bgcolor: action.props.variant === "contained" ? undefined : "rgba(255,255,255,0.06)",
+                      borderRadius: 0.5,
+                      borderColor: action.props.variant === "contained" ? undefined : sidebarBorder,
+                      bgcolor: action.props.variant === "contained" ? undefined : alpha(theme.palette.primary.main, 0.04),
                       "&:hover": {
-                        borderColor: action.props.variant === "contained" ? undefined : "rgba(255,255,255,0.36)",
-                        bgcolor: action.props.variant === "contained" ? undefined : "rgba(255,255,255,0.10)"
+                        borderColor: action.props.variant === "contained" ? undefined : alpha(theme.palette.primary.main, 0.32),
+                        bgcolor: action.props.variant === "contained" ? undefined : sidebarHover
                       },
                       ...action.props.sx
                     }
@@ -214,30 +245,44 @@ export function MaterialShell({
         </Box>
       ) : null}
 
-      <Divider sx={{ my: 2, borderColor: "rgba(255,255,255,0.12)" }} />
+      <Divider sx={{ mt: 2, mb: 1 }} />
 
-      <Typography variant="overline" sx={{ color: "rgba(255,255,255,0.64)" }}>
-        Menu principal
-      </Typography>
-      <List sx={{ mt: 0.75 }}>
-        {navItems.map((item) => {
-          const active = location.pathname === item.href;
+      <Box
+        sx={{
+          position: "sticky",
+          top: 88,
+          zIndex: 1,
+          bgcolor: "background.paper",
+          py: 1,
+          mb: 1
+        }}
+      >
+        <Typography component="div" variant="overline" sx={{ color: "text.secondary", px: 1 }}>
+          Menu principal
+        </Typography>
+      </Box>
+      <List sx={{ mt: 0.5 }}>
+        {mainNavItems.map((item) => {
+          const active = isMainNavItemActive(location.pathname, item.path);
           return (
             <ListItemButton
               key={item.label}
               component={RouterLink}
-              to={item.href}
+              to={item.path}
+              onClick={() => setMobileNavOpen(false)}
               selected={active}
               sx={{
                 my: 0.5,
-                borderRadius: 1.5,
-                color: "rgba(255,255,255,0.78)",
+                minHeight: 42,
+                px: 1,
+                borderRadius: 0.5,
+                color: sidebarMutedText,
                 "&.Mui-selected": {
-                  bgcolor: "rgba(129, 201, 149, 0.18)",
-                  color: "white"
+                  bgcolor: sidebarSelected,
+                  color: "text.primary"
                 },
                 "&.Mui-selected:hover, &:hover": {
-                  bgcolor: "rgba(255,255,255,0.12)"
+                  bgcolor: sidebarHover
                 }
               }}
             >
@@ -246,9 +291,16 @@ export function MaterialShell({
               </ListItemIcon>
               <ListItemText
                 primary={item.label}
+                sx={{ minWidth: 0 }}
                 slotProps={{
                   primary: {
-                    sx: { fontWeight: 800, fontSize: 14 }
+                    sx: {
+                      fontWeight: 800,
+                      fontSize: 14,
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      whiteSpace: "nowrap"
+                    }
                   }
                 }}
               />
@@ -258,9 +310,11 @@ export function MaterialShell({
                   size="small"
                   sx={{
                     height: 22,
-                    bgcolor: active ? "rgba(255,255,255,0.18)" : "rgba(129,201,149,0.18)",
-                    color: active ? "white" : "#81c995",
-                    fontWeight: 800
+                    maxWidth: 44,
+                    bgcolor: active ? alpha(theme.palette.primary.main, 0.20) : alpha(theme.palette.primary.main, 0.10),
+                    color: "primary.main",
+                    fontWeight: 800,
+                    borderRadius: 0.5
                   }}
                 />
               ) : null}
@@ -269,18 +323,6 @@ export function MaterialShell({
         })}
       </List>
 
-      <Box sx={{ mt: "auto", pt: 2 }}>
-        <Divider sx={{ mb: 2, borderColor: "rgba(255,255,255,0.12)" }} />
-        <Chip
-          label={asideTitle}
-          size="small"
-          sx={{
-            bgcolor: "rgba(255,255,255,0.10)",
-            color: "white",
-            borderRadius: 1
-          }}
-        />
-      </Box>
     </Box>
   );
 
@@ -327,7 +369,17 @@ export function MaterialShell({
           minHeight: "100vh"
         }}
       >
-        <Stack spacing={{ xs: 3.25, sm: 3 }} sx={{ maxWidth: 1440, mx: "auto", px: { xs: 2.25, sm: 3, lg: 4 }, pt: { xs: 1.75, lg: 2.25 }, pb: { xs: 3, lg: 4 } }}>
+        <Stack
+          spacing={dashboardSectionGap}
+          sx={{
+            width: "100%",
+            maxWidth: { xs: 1560, xl: "none" },
+            mx: "auto",
+            px: { xs: 2, sm: 2, lg: 2.5, xl: 3 },
+            pt: { xs: 1.75, lg: 1.25 },
+            pb: { xs: 2.25, lg: 2 }
+          }}
+        >
           <Stack
             direction="row"
             spacing={1.5}
@@ -336,7 +388,7 @@ export function MaterialShell({
             <IconButton aria-label="Abrir menu lateral" onClick={() => setMobileNavOpen(true)}>
               <MenuIcon />
             </IconButton>
-            <Typography variant="subtitle1" component="div" noWrap sx={{ fontWeight: 900 }}>
+            <Typography variant="subtitle1" component="div" noWrap sx={{ minWidth: 0, flex: 1, fontWeight: 900 }}>
               {pageLabel}
             </Typography>
             <Box sx={{ ml: "auto" }}>
@@ -360,7 +412,7 @@ export function MaterialShell({
               gap: 1.25,
               borderBottom: "1px solid",
               borderColor: "divider",
-              pb: { xs: 2.5, lg: 3 }
+              pb: { xs: 1.75, lg: 2.25 }
             }}
           >
             <Stack direction="row" spacing={1.5} sx={{ alignItems: "flex-start", justifyContent: "space-between" }}>
@@ -369,10 +421,8 @@ export function MaterialShell({
                   variant="overline"
                   color="primary.dark"
                   sx={{
-                    fontFamily: "Inter, system-ui, sans-serif",
                     fontWeight: 800,
                     fontSize: "0.7rem",
-                    letterSpacing: "0.1em",
                     lineHeight: 1.2
                   }}
                 >
