@@ -8,6 +8,11 @@ export default defineConfig({
     environment: "jsdom",
     setupFiles: "./src/test/setup.js",
     testTimeout: 10000,
+    exclude: [
+      "**/node_modules/**",
+      "**/dist/**",
+      "**/.claude/**",
+    ],
     coverage: {
       provider: "v8",
       reporter: ["text", "html"],

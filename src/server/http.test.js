@@ -4,18 +4,36 @@ import { createApiServer } from "./http.js";
 
 function request(server, path, options = {}) {
   return new Promise((resolve, reject) => {
-    server.listen(0, () => {
-      const address = server.address();
-      const port = typeof address === "object" && address ? address.port : 0;
+    const request = {
+      method: options.method ?? "GET",
+      url: path,
+      headers: options.headers ?? {},
+      [Symbol.asyncIterator]: async function* () {},
+    };
 
-      fetch(`http://127.0.0.1:${port}${path}`, options)
-        .then(async (response) => {
-          const body = await response.json();
-          resolve({ response, body });
-        })
-        .catch(reject)
-        .finally(() => server.close());
-    });
+    const response = {
+      statusCode: 200,
+      headers: {},
+      writeHead(statusCode, headers) {
+        this.statusCode = statusCode;
+        this.headers = headers;
+      },
+      end(payload) {
+        try {
+          resolve({
+            response: {
+              status: this.statusCode,
+              headers: this.headers,
+            },
+            body: payload ? JSON.parse(payload) : null,
+          });
+        } catch (error) {
+          reject(error);
+        }
+      },
+    };
+
+    server.emit("request", request, response);
   });
 }
 

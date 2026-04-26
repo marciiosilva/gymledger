@@ -33,5 +33,3 @@ export function createPrismaClient(env = process.env) {
 
   return new PrismaClient({ adapter });
 }
-
-export const prisma = createPrismaClient();
