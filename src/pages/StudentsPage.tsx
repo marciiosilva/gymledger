@@ -32,7 +32,9 @@ import {
   Tooltip,
   Typography
 } from "@mui/material";
+import { alpha, useTheme } from "@mui/material/styles";
 import { useMemo, useState } from "react";
+import { kpiCardSurfaceGradient } from "../material/surfaces";
 import {
   attentionQueue,
   planMix,
@@ -60,7 +62,11 @@ function statusColor(status: string): "success" | "warning" | "error" | "default
 
 export function StudentsPage() {
   const [filtersOpen, setFiltersOpen] = useState(false);
+  const theme = useTheme();
+  const isDark = theme.palette.mode === "dark";
+  const kpiCardSurface = kpiCardSurfaceGradient(theme);
   const planMixTotal = useMemo(() => planMix.reduce((sum, plan) => sum + plan.count, 0), []);
+  const filterPanelBg = alpha(theme.palette.common.black, isDark ? 0.12 : 0.02);
 
   return (
     <MaterialShell
@@ -93,8 +99,7 @@ export function StudentsPage() {
                   border: "1px solid",
                   borderColor: "divider",
                   borderRadius: 0.5,
-                  background:
-                    "linear-gradient(180deg, rgba(255,255,255,0.98) 0%, rgba(247,250,249,0.92) 100%)"
+                  background: kpiCardSurface
                 }}
               >
                 <CardContent sx={{ p: { xs: 1.5, sm: 1.75 }, "&:last-child": { pb: { xs: 1.5, sm: 1.75 } } }}>
@@ -175,7 +180,7 @@ export function StudentsPage() {
                     border: "1px solid",
                     borderColor: "divider",
                     borderRadius: 0.5,
-                    bgcolor: "rgba(17,24,39,0.02)"
+                    bgcolor: filterPanelBg
                   }}
                 >
                   <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 700 }}>

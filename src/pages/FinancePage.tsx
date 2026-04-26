@@ -35,7 +35,9 @@ import {
   Tooltip,
   Typography
 } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import { useState } from "react";
+import { kpiCardSurfaceGradient } from "../material/surfaces";
 import {
   cashflowSummary,
   expenseBreakdown,
@@ -78,6 +80,8 @@ function badgeColor(tone: string): "success" | "warning" | "secondary" {
 
 export function FinancePage() {
   const [bookFiltersOpen, setBookFiltersOpen] = useState(false);
+  const theme = useTheme();
+  const kpiCardSurface = kpiCardSurfaceGradient(theme);
 
   return (
     <MaterialShell
@@ -113,8 +117,7 @@ export function FinancePage() {
                   border: "1px solid",
                   borderColor: "divider",
                   borderRadius: 0.5,
-                  background:
-                    "linear-gradient(180deg, rgba(255,255,255,0.98) 0%, rgba(247,250,249,0.92) 100%)"
+                  background: kpiCardSurface
                 }}
               >
                 <CardContent sx={{ p: { xs: 1.5, sm: 1.75 }, "&:last-child": { pb: { xs: 1.5, sm: 1.75 } } }}>
@@ -177,8 +180,7 @@ export function FinancePage() {
                             border: "1px solid",
                             borderColor: "divider",
                             borderRadius: 0.5,
-                            background:
-                              "linear-gradient(180deg, rgba(255,255,255,0.98) 0%, rgba(247,250,249,0.92) 100%)"
+                            background: kpiCardSurface
                           }}
                         >
                           <CardContent sx={{ p: { xs: 1.5, sm: 1.75 }, "&:last-child": { pb: { xs: 1.5, sm: 1.75 } } }}>

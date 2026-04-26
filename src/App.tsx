@@ -24,6 +24,8 @@ import {
   TableRow,
   Typography
 } from "@mui/material";
+import { alpha, useTheme } from "@mui/material/styles";
+import { kpiCardSurfaceGradient } from "./material/surfaces";
 import {
   cadenceItems,
   dueSoon,
@@ -61,6 +63,13 @@ function statusColor(status: string): "success" | "warning" | "error" {
 }
 
 function App() {
+  const theme = useTheme();
+  const isDark = theme.palette.mode === "dark";
+  const kpiCardSurface = kpiCardSurfaceGradient(theme);
+  const weekDayInnerBg = alpha(theme.palette.background.paper, isDark ? 0.7 : 0.92);
+  const warmPanelBg = isDark
+    ? alpha(theme.palette.warning.main, 0.08)
+    : alpha("#faf9f3", 0.8);
   return (
     <MaterialShell
       eyebrow="Dashboard"
@@ -95,8 +104,7 @@ function App() {
                   border: "1px solid",
                   borderColor: "divider",
                   borderRadius: 0.5,
-                  background:
-                    "linear-gradient(180deg, rgba(255,255,255,0.96) 0%, rgba(247,250,249,0.9) 100%)"
+                  background: kpiCardSurface
                 }}
               >
                 <CardContent sx={{ p: { xs: 1.5, sm: 1.75 }, "&:last-child": { pb: { xs: 1.5, sm: 1.75 } } }}>
@@ -181,7 +189,7 @@ function App() {
                         ...surfaceCardSx,
                         borderRadius: 0.5,
                         boxShadow: "none",
-                        bgcolor: "rgba(255,255,255,0.92)"
+                        bgcolor: weekDayInnerBg
                       }}
                     >
                       <CardContent sx={{ p: { xs: 1.5, sm: 1.75 }, "&:last-child": { pb: { xs: 1.5, sm: 1.75 } } }}>
@@ -244,7 +252,16 @@ function App() {
                   </Card>
                 </Grid>
                 <Grid size={{ xs: 12, md: 6 }}>
-                  <Card variant="outlined" sx={{ ...surfaceCardSx, borderRadius: 0.5, boxShadow: "none", height: "100%", bgcolor: "rgba(250,249,243,0.8)" }}>
+                  <Card
+                    variant="outlined"
+                    sx={{
+                      ...surfaceCardSx,
+                      borderRadius: 0.5,
+                      boxShadow: "none",
+                      height: "100%",
+                      bgcolor: warmPanelBg
+                    }}
+                  >
                     <CardContent sx={cardContentSx}>
                       <Typography variant="overline" color="text.secondary" fontWeight={900}>
                         Aprendizado da semana
@@ -331,7 +348,7 @@ function App() {
               sx={{
                 ...surfaceCardSx,
                 height: "100%",
-                background: "linear-gradient(180deg, rgba(255,255,255,0.98) 0%, rgba(248,250,252,0.95) 100%)"
+                background: kpiCardSurface
               }}
             >
               <CardContent sx={cardContentSx}>
